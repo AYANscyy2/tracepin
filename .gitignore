@@ -6,3 +6,6 @@ __pycache__/
 traces/*
 !traces/.gitkeep
 !traces/sample.jsonl
+findings/*
+!findings/.gitkeep
+!findings/sample_*.json
