@@ -22,4 +22,10 @@ build-backend = "hatchling.build"
 packages = ["src/tracepin"]
 
 [project.scripts]
-tracepin = "tracepin.runner:app"
+tracepin = "tracepin.cli:app"
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
