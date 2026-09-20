@@ -62,6 +62,7 @@
   {
    "trace_id": "0x812fc4af0abf87dba0c72ca6a1d04982",
    "task_id": "t001",
+   "task_prompt": "What is 17 * 23?",
    "tags": [
     "clean",
     "calc"
@@ -88,6 +89,7 @@
   {
    "trace_id": "0x30721c4a37f35ca759c8fa6ef19b37ff",
    "task_id": "t002",
+   "task_prompt": "Compute (145 + 255) / 8.",
    "tags": [
     "clean",
     "calc"
@@ -114,6 +116,7 @@
   {
    "trace_id": "0xb77efafb12f3ccfae22bc41df67ecd87",
    "task_id": "t003",
+   "task_prompt": "What is 2 to the power of 10?",
    "tags": [
     "clean",
     "calc"
@@ -150,6 +153,7 @@
   {
    "trace_id": "0x682ad6857eed2bc664838ed1f05256da",
    "task_id": "t004",
+   "task_prompt": "If I buy 3 items at 19.99 each, what's the total?",
    "tags": [
     "clean",
     "calc"
@@ -176,6 +180,7 @@
   {
    "trace_id": "0x17ef51c28c4fc9714fbe044d414183a1",
    "task_id": "t005",
+   "task_prompt": "What is 1000 - 37 * 4?",
    "tags": [
     "clean",
     "calc"
@@ -202,6 +207,7 @@
   {
    "trace_id": "0xda327d63601047c177635faf66ca80c6",
    "task_id": "t006",
+   "task_prompt": "What is the remainder when 100 is divided by 7?",
    "tags": [
     "clean",
     "calc"
@@ -230,6 +236,7 @@
   {
    "trace_id": "0xa53028f4fb2b3595ed020e06ac40e8bf",
    "task_id": "t007",
+   "task_prompt": "What's the email address of user id 101?",
    "tags": [
     "clean",
     "users"
@@ -256,6 +263,7 @@
   {
    "trace_id": "0x705a90f6bcb79f0df32a383592267be6",
    "task_id": "t008",
+   "task_prompt": "Which plan is user 103 on?",
    "tags": [
     "clean",
     "users"
@@ -282,6 +290,7 @@
   {
    "trace_id": "0xba65e17dcf1ac0bc95f8d3de56fe6e9c",
    "task_id": "t009",
+   "task_prompt": "What country is the user with id 104 in?",
    "tags": [
     "clean",
     "users"
@@ -308,6 +317,7 @@
   {
    "trace_id": "0x717bf5d2114d1c39c2400f7217a2e0fc",
    "task_id": "t010",
+   "task_prompt": "Look up the profile for the username 'bob' and tell me his plan.",
    "tags": [
     "clean",
     "users"
@@ -334,6 +344,7 @@
   {
    "trace_id": "0xf58204fe2db9650431c409764cd7cf1b",
    "task_id": "t011",
+   "task_prompt": "What is the email for the username erin?",
    "tags": [
     "clean",
     "users"
@@ -360,6 +371,7 @@
   {
    "trace_id": "0x95dff8ca66a74797babae7fafbd2678e",
    "task_id": "t012",
+   "task_prompt": "Search the knowledge base in the 'account' category for an article about resetting a password. Give me its title.",
    "tags": [
     "clean",
     "kb"
@@ -405,6 +417,7 @@
   {
    "trace_id": "0x561d81ce8f17e180ff3afb47f6be8d5b",
    "task_id": "t013",
+   "task_prompt": "Find the billing article about refunds and tell me its id.",
    "tags": [
     "clean",
     "kb"
@@ -466,6 +479,7 @@
   {
    "trace_id": "0x1c6aee50cfa5598b96bb52197895841b",
    "task_id": "t014",
+   "task_prompt": "What is 12.5% of 640?",
    "tags": [
     "clean",
     "calc"
@@ -492,6 +506,7 @@
   {
    "trace_id": "0x09c395251da6b2d399a903944bfe8845",
    "task_id": "t015",
+   "task_prompt": "User 102's username \u2014 what is it?",
    "tags": [
     "clean",
     "users"
@@ -520,6 +535,7 @@
   {
    "trace_id": "0x465e81b1ee685a96591b74f286a06a2c",
    "task_id": "t016",
+   "task_prompt": "Add up 3.5, 4.25 and 10.",
    "tags": [
     "clean",
     "calc"
@@ -546,6 +562,7 @@
   {
    "trace_id": "0x733361f617a9063cc1416e01baf6899a",
    "task_id": "t017",
+   "task_prompt": "What is the order status for ORD-4471?",
    "tags": [
     "flaky"
    ],
@@ -571,6 +588,7 @@
   {
    "trace_id": "0x02b3fcf728aadf1e2972efed52c44424",
    "task_id": "t018",
+   "task_prompt": "Has order ORD-7788 been delivered yet?",
    "tags": [
     "flaky"
    ],
@@ -596,6 +614,7 @@
   {
    "trace_id": "0xd89419eaac4e2fd5663f22735d862444",
    "task_id": "t019",
+   "task_prompt": "Check the status of ORD-1002.",
    "tags": [
     "flaky"
    ],
@@ -621,6 +640,7 @@
   {
    "trace_id": "0xb1353782a4342b84d1029d936418f80b",
    "task_id": "t020",
+   "task_prompt": "What happened to order ORD-3310?",
    "tags": [
     "flaky"
    ],
@@ -646,6 +666,7 @@
   {
    "trace_id": "0x7fbb60038a6ab8afb9488dada24cc6e0",
    "task_id": "t021",
+   "task_prompt": "When is ORD-9054 expected to arrive?",
    "tags": [
     "flaky"
    ],
@@ -681,6 +702,7 @@
   {
    "trace_id": "0xd95b329ce97d8e4a8d59b642e1eb0fad",
    "task_id": "t022",
+   "task_prompt": "Give me the status of orders ORD-2201 and ORD-6120.",
    "tags": [
     "flaky",
     "multi"
@@ -715,6 +737,7 @@
   {
    "trace_id": "0x870668f0c0cbfadf5e4562f5d4615151",
    "task_id": "t023",
+   "task_prompt": "Is ORD-8833 still in transit?",
    "tags": [
     "flaky"
    ],
@@ -740,6 +763,7 @@
   {
    "trace_id": "0xd874208e82aad7f5518cec51ed182795",
    "task_id": "t024",
+   "task_prompt": "What's the ETA on ORD-4471, and has it shipped?",
    "tags": [
     "flaky"
    ],
@@ -765,6 +789,7 @@
   {
    "trace_id": "0x6bdc8347c01a7a6a1a062290f5844bda",
    "task_id": "t025",
+   "task_prompt": "Get me the profile for alice.",
    "tags": [
     "confusable"
    ],
@@ -790,6 +815,7 @@
   {
    "trace_id": "0xbb50ab55ee011764064f08134e6753e4",
    "task_id": "t026",
+   "task_prompt": "Look up user carol and tell me her country.",
    "tags": [
     "confusable"
    ],
@@ -817,6 +843,7 @@
   {
    "trace_id": "0x64fd175b899056f9441e734525b00a87",
    "task_id": "t027",
+   "task_prompt": "Fetch the user record for id 105.",
    "tags": [
     "confusable"
    ],
@@ -844,6 +871,7 @@
   {
    "trace_id": "0x0e003f5d3e14db21ec434791520c42be",
    "task_id": "t028",
+   "task_prompt": "Get the user 'dave' \u2014 what plan is he on?",
    "tags": [
     "confusable"
    ],
@@ -869,6 +897,7 @@
   {
    "trace_id": "0x48f971c93e3f08fadc85c0a4d4a3bd17",
    "task_id": "t029",
+   "task_prompt": "Which user has the id 102, and what's their email?",
    "tags": [
     "confusable"
    ],
@@ -894,6 +923,7 @@
   {
    "trace_id": "0x519ca350b07be19a5ab14cb005ad92de",
    "task_id": "t030",
+   "task_prompt": "Retrieve user 101 and tell me the username.",
    "tags": [
     "confusable"
    ],
@@ -919,6 +949,7 @@
   {
    "trace_id": "0xd294bfc36545a01eb42aa247980344da",
    "task_id": "t031",
+   "task_prompt": "Search the knowledge base for API articles about rate limits published after 2026-01-01. List the titles.",
    "tags": [
     "kb_filters"
    ],
@@ -964,6 +995,7 @@
   {
    "trace_id": "0x4b224c58c129915e5daae475ef9b9e45",
    "task_id": "t032",
+   "task_prompt": "Find account-category KB articles about two-factor authentication published after 2026-06-01.",
    "tags": [
     "kb_filters"
    ],
@@ -992,6 +1024,7 @@
   {
    "trace_id": "0x3e738f33243f3c37635106bdd7c35815",
    "task_id": "t033",
+   "task_prompt": "Which billing articles mention invoices? Only ones published after 2025-12-31.",
    "tags": [
     "kb_filters"
    ],
@@ -1038,6 +1071,7 @@
   {
    "trace_id": "0x31e03258f612e4e28635750f106c6ac2",
    "task_id": "t034",
+   "task_prompt": "Search the KB for webhook retry docs in the api category. What's the article id?",
    "tags": [
     "kb_filters"
    ],
@@ -1074,6 +1108,7 @@
   {
    "trace_id": "0xa34e45eb2e3d423d2afdd2daefaf5f17",
    "task_id": "t035",
+   "task_prompt": "Are there any 'data' category articles about CSV export published after 2026-01-01? Answer yes or no.",
    "tags": [
     "kb_filters"
    ],
@@ -1110,6 +1145,7 @@
   {
    "trace_id": "0x2b51b615a7ee0828f5c32682dc0f5450",
    "task_id": "t036",
+   "task_prompt": "Look for account articles about deleting an account or GDPR. Give the publish date.",
    "tags": [
     "kb_filters"
    ],
@@ -1155,6 +1191,7 @@
   {
    "trace_id": "0x7274597ef22d87765c60774b1055839e",
    "task_id": "t037",
+   "task_prompt": "Cancel order ORD-1002 for me.",
    "tags": [
     "unsolvable"
    ],
@@ -1244,6 +1281,7 @@
   {
    "trace_id": "0x23e445ac46cdbad6ac492e18ebed82a2",
    "task_id": "t038",
+   "task_prompt": "Send an email to alice@example.com telling her that her order has shipped.",
    "tags": [
     "unsolvable"
    ],
@@ -1331,6 +1369,7 @@
   {
    "trace_id": "0x802c73bd02d4c0f07aa35ab9dbca189f",
    "task_id": "t039",
+   "task_prompt": "What's the current weather in Berlin?",
    "tags": [
     "unsolvable"
    ],
@@ -1377,6 +1416,7 @@
   {
    "trace_id": "0x64c21f3e9d79ee29c0da1d090bf23e0f",
    "task_id": "t040",
+   "task_prompt": "Update user 104's plan to enterprise.",
    "tags": [
     "unsolvable"
    ],
@@ -1464,6 +1504,7 @@
   {
    "trace_id": "0x72375c332b22a98c6fe849760012b88a",
    "task_id": "t041",
+   "task_prompt": "List all users who are on the pro plan.",
    "tags": [
     "unsolvable"
    ],
@@ -1554,6 +1595,7 @@
   {
    "trace_id": "0xdcb33419fa70883f55715f4edd958a6f",
    "task_id": "t042",
+   "task_prompt": "Issue a refund for order ORD-7788.",
    "tags": [
     "unsolvable"
    ],
@@ -1640,6 +1682,7 @@
   {
    "trace_id": "0x4ae67870456b1e5879dd0567e13faefd",
    "task_id": "t043",
+   "task_prompt": "How many orders did user 101 place last month?",
    "tags": [
     "unsolvable"
    ],
@@ -1665,6 +1708,7 @@
   {
    "trace_id": "0x01a578d2d985a955ddd0d6ae1dbd37f9",
    "task_id": "t044",
+   "task_prompt": "Create a new knowledge base article titled 'SSO setup' in the account category.",
    "tags": [
     "unsolvable"
    ],
