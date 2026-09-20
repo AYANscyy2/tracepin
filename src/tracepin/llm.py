@@ -7,6 +7,7 @@ import time
 import uuid
 from dataclasses import dataclass, field
 
+import httpx
 from google import genai
 from google.genai import errors, types
 from opentelemetry import trace
@@ -14,7 +15,7 @@ from opentelemetry.trace import SpanKind, Status, StatusCode
 
 tracer = trace.get_tracer("tracepin")
 
-# Free-tier quota is 15 req/min. 429s are transport noise, not agent behaviour, so they
+# Free-tier quota is 15 req/min. 429s, 5xx and timeouts are transport noise, not agent behaviour, so they
 # are retried inside the chat span and counted in tracepin.chat.transport_retries.
 MAX_TRANSPORT_RETRIES = 4
 
@@ -102,8 +103,11 @@ class LLM:
                             model=self.model, contents=history, config=config
                         )
                         break
-                    except errors.ClientError as exc:
-                        if exc.code != 429 or retries >= MAX_TRANSPORT_RETRIES:
+                    except (errors.ClientError, errors.ServerError, httpx.TimeoutException) as exc:
+                        retryable = isinstance(exc, (errors.ServerError, httpx.TimeoutException)) or (
+                            isinstance(exc, errors.ClientError) and exc.code == 429
+                        )
+                        if not retryable or retries >= MAX_TRANSPORT_RETRIES:
                             raise
                         retries += 1
                         delay = _retry_delay(str(exc))
