@@ -8,7 +8,7 @@ Three layers, one per day:
 
 1. **Instrument** (Day 1) — a hand-rolled agent loop emitting OTel GenAI spans; rejected
    tool calls are spans too, and every executed tool span carries `code.*` attributes.
-2. **Detect** (Day 2) — 15 detectors over the trace file, a findings JSON, a `rich` report
+2. **Detect** (Day 2) — 16 detectors over the trace file, a findings JSON, a `rich` report
    that exits 1 on HIGH findings, and a regression diff between two runs.
 3. **Root-cause UI** (Day 3) — reads the findings file; does not re-run detectors.
 
@@ -89,7 +89,7 @@ tracepin analyze traces/run_<id>.jsonl                 # -> findings/run_<id>.js
 tracepin report  findings/run_<id>.json                # exit 1 if any HIGH finding
 tracepin report  findings/run_<id>.json --trace t041   # one trace, full timeline
 tracepin compare findings/run_v1.json findings/run_v2.json   # exit 1 if anything regressed
-pytest                                                 # 34 tests, one +/- pair per detector
+pytest                                                 # 36 tests, one +/- pair per detector
 ```
 
 Detectors are pure functions `(Trace, Baselines) -> list[Finding]` over a typed model
@@ -112,6 +112,7 @@ labelled:
 | `tool.unknown_name` | unregistered tool; also checks the captured system prompt — *advertised* vs *invented* | HIGH |
 | `tool.confusable_name` | unregistered name within edit distance 3 of a real one | HIGH |
 | `answer.unsupported` | quoted strings / numbers in the answer absent from every tool result (heuristic, conf 0.5) | MED |
+| `answer.phantom_action` | answer says "has been updated / sent / created…" but no tool with a mutating name succeeded; echoed status (`has been cancelled` from `status=cancelled`) excluded | HIGH |
 | `perf.latency_outlier` | > median + 3·MAD and > 2× median for that tool, n ≥ 5, first call excluded | LOW→HIGH by ratio |
 | `perf.context_bloat` | input tokens last > 3× first or superlinear growth across chat turns | MED/HIGH |
 | `perf.token_spike` | output tokens far above run median (rambling) | LOW |
@@ -149,7 +150,14 @@ Full log with trace ids in [docs/BUGS.md](docs/BUGS.md).
    (`terms`/`filters`/`category` missing). The run-level finding inverts the blame from
    the model to the one-line description on `docs.py:36`, and
    `error.self_correction_cost` prices each recovery at ~1,200 tokens and 7–19 s.
-3. **"Never say you can't" turns unsolvable tasks into loops.** Six `unsolvable` tasks hit
+3. **The agent reports actions it never took.** On `gemini-3.5-flash-lite`, t038
+   called `fetch_user("alice@example.com")`, got a `KeyError`, and answered *"The email
+   to alice@example.com has been sent"* — `error.ignored` at HIGH: failure hidden, no
+   later success. t040/t042/t044 were worse: nothing failed at all, the agent simply said
+   *"plan has been updated"*, *"refund processed"*, *"article created"* with only read-only
+   tools in the registry. No span was wrong, so no field-filter could catch it;
+   `answer.phantom_action` compares the answer's verbs to what actually ran.
+4. **"Never say you can't" turns unsolvable tasks into loops.** Six `unsolvable` tasks hit
    `max_iterations`; `loop.near_duplicate` shows the shape — `search_kb` 6× varying only
    `terms[0]` (`users`, `pro plan`, `pro`, `plan`, `list`, `all users`), every result
    empty. The terse prompt answered the same tasks in 2 iterations with a refusal.
