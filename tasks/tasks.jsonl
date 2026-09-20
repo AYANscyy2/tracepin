@@ -1,0 +1,44 @@
+{"id":"t001","prompt":"What is 17 * 23?","expected":"391","checker":"numeric","tags":["clean","calc"]}
+{"id":"t002","prompt":"Compute (145 + 255) / 8.","expected":"50","checker":"numeric","tags":["clean","calc"]}
+{"id":"t003","prompt":"What is 2 to the power of 10?","expected":"1024","checker":"numeric","tags":["clean","calc"]}
+{"id":"t004","prompt":"If I buy 3 items at 19.99 each, what's the total?","expected":"59.97","checker":"numeric","tags":["clean","calc"]}
+{"id":"t005","prompt":"What is 1000 - 37 * 4?","expected":"852","checker":"numeric","tags":["clean","calc"]}
+{"id":"t006","prompt":"What is the remainder when 100 is divided by 7?","expected":"2","checker":"numeric","tags":["clean","calc"]}
+{"id":"t007","prompt":"What's the email address of user id 101?","expected":"alice@example.com","checker":"contains","tags":["clean","users"]}
+{"id":"t008","prompt":"Which plan is user 103 on?","expected":"enterprise","checker":"contains","tags":["clean","users"]}
+{"id":"t009","prompt":"What country is the user with id 104 in?","expected":"DE","checker":"contains","tags":["clean","users"]}
+{"id":"t010","prompt":"Look up the profile for the username 'bob' and tell me his plan.","expected":"free","checker":"contains","tags":["clean","users"]}
+{"id":"t011","prompt":"What is the email for the username erin?","expected":"erin@example.com","checker":"contains","tags":["clean","users"]}
+{"id":"t012","prompt":"Search the knowledge base in the 'account' category for an article about resetting a password. Give me its title.","expected":"reset your password","checker":"contains","tags":["clean","kb"]}
+{"id":"t013","prompt":"Find the billing article about refunds and tell me its id.","expected":"kb-2","checker":"contains","tags":["clean","kb"]}
+{"id":"t014","prompt":"What is 12.5% of 640?","expected":"80","checker":"numeric","tags":["clean","calc"]}
+{"id":"t015","prompt":"User 102's username — what is it?","expected":"bob","checker":"contains","tags":["clean","users"]}
+{"id":"t016","prompt":"Add up 3.5, 4.25 and 10.","expected":"17.75","checker":"numeric","tags":["clean","calc"]}
+{"id":"t017","prompt":"What is the order status for ORD-4471?","expected":"shipped","checker":"contains","tags":["flaky"]}
+{"id":"t018","prompt":"Has order ORD-7788 been delivered yet?","expected":"delivered","checker":"contains","tags":["flaky"]}
+{"id":"t019","prompt":"Check the status of ORD-1002.","expected":"processing","checker":"contains","tags":["flaky"]}
+{"id":"t020","prompt":"What happened to order ORD-3310?","expected":"cancelled","checker":"contains","tags":["flaky"]}
+{"id":"t021","prompt":"When is ORD-9054 expected to arrive?","expected":"2026-10-04","checker":"contains","tags":["flaky"]}
+{"id":"t022","prompt":"Give me the status of orders ORD-2201 and ORD-6120.","expected":"shipped","checker":"contains","tags":["flaky","multi"]}
+{"id":"t023","prompt":"Is ORD-8833 still in transit?","expected":"delivered","checker":"contains","tags":["flaky"]}
+{"id":"t024","prompt":"What's the ETA on ORD-4471, and has it shipped?","expected":"2026-09-23","checker":"contains","tags":["flaky"]}
+{"id":"t025","prompt":"Get me the profile for alice.","expected":"alice@example.com","checker":"contains","tags":["confusable"]}
+{"id":"t026","prompt":"Look up user carol and tell me her country.","expected":"UK","checker":"contains","tags":["confusable"]}
+{"id":"t027","prompt":"Fetch the user record for id 105.","expected":"erin","checker":"contains","tags":["confusable"]}
+{"id":"t028","prompt":"Get the user 'dave' — what plan is he on?","expected":"pro","checker":"contains","tags":["confusable"]}
+{"id":"t029","prompt":"Which user has the id 102, and what's their email?","expected":"bob@example.com","checker":"contains","tags":["confusable"]}
+{"id":"t030","prompt":"Retrieve user 101 and tell me the username.","expected":"alice","checker":"contains","tags":["confusable"]}
+{"id":"t031","prompt":"Search the knowledge base for API articles about rate limits published after 2026-01-01. List the titles.","expected":"rate limits","checker":"contains","tags":["kb_filters"]}
+{"id":"t032","prompt":"Find account-category KB articles about two-factor authentication published after 2026-06-01.","expected":"Two-factor","checker":"contains","tags":["kb_filters"]}
+{"id":"t033","prompt":"Which billing articles mention invoices? Only ones published after 2025-12-31.","expected":"Invoice","checker":"contains","tags":["kb_filters"]}
+{"id":"t034","prompt":"Search the KB for webhook retry docs in the api category. What's the article id?","expected":"kb-7","checker":"contains","tags":["kb_filters"]}
+{"id":"t035","prompt":"Are there any 'data' category articles about CSV export published after 2026-01-01? Answer yes or no.","expected":"no","checker":"contains","tags":["kb_filters"]}
+{"id":"t036","prompt":"Look for account articles about deleting an account or GDPR. Give the publish date.","expected":"2025-09-05","checker":"contains","tags":["kb_filters"]}
+{"id":"t037","prompt":"Cancel order ORD-1002 for me.","expected":"","checker":"refusal","tags":["unsolvable"]}
+{"id":"t038","prompt":"Send an email to alice@example.com telling her that her order has shipped.","expected":"","checker":"refusal","tags":["unsolvable"]}
+{"id":"t039","prompt":"What's the current weather in Berlin?","expected":"","checker":"refusal","tags":["unsolvable"]}
+{"id":"t040","prompt":"Update user 104's plan to enterprise.","expected":"","checker":"refusal","tags":["unsolvable"]}
+{"id":"t041","prompt":"List all users who are on the pro plan.","expected":"","checker":"refusal","tags":["unsolvable"]}
+{"id":"t042","prompt":"Issue a refund for order ORD-7788.","expected":"","checker":"refusal","tags":["unsolvable"]}
+{"id":"t043","prompt":"How many orders did user 101 place last month?","expected":"","checker":"refusal","tags":["unsolvable"]}
+{"id":"t044","prompt":"Create a new knowledge base article titled 'SSO setup' in the account category.","expected":"","checker":"refusal","tags":["unsolvable"]}
