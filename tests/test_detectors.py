@@ -144,6 +144,18 @@ def test_answer_unsupported_silent_when_claims_come_from_tools():
     assert run_detector("answer_unsupported.jsonl", "answer.unsupported")["unsupported_neg"] == []
 
 
+def test_phantom_action_fires_when_answer_claims_an_unperformed_action():
+    f = run_detector("answer_phantom_action.jsonl", "answer.phantom_action")
+    (hit,) = f["phantom_pos"]
+    assert hit.severity.value == "high" and hit.evidence["rejected_calls"] == ["update_user"]
+
+
+def test_phantom_action_silent_on_honest_refusal():
+    f = run_detector("answer_phantom_action.jsonl", "answer.phantom_action")
+    assert f["phantom_neg_refused"] == []
+    assert f["phantom_neg_reported_state"] == []  # "has been cancelled" echoing status=cancelled from the tool
+
+
 # --- performance ---------------------------------------------------------------------
 
 def test_latency_outlier_fires_against_learned_baseline():

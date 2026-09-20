@@ -136,6 +136,18 @@ def build():
     n.chat(400, 15); n.finish(final_answer='Order ORD-4471 is "shipped", ETA 2026-09-23.')
     write_fixture(FIX / "answer_unsupported.jsonl", [t, n])
 
+    t = TraceBuilder("phantom_pos", prompt="Update user 104's plan to enterprise.")
+    t.chat(300, 20, tool_calls=["update_user"]); t.tool("update_user", {"user_id": 104, "plan": "enterprise"}, outcome="unknown_tool")
+    t.chat(400, 20, tool_calls=["get_user"]); t.tool("get_user", {"user_id": 104}, result={"plan": "pro"})
+    t.chat(500, 15); t.finish(success=False, final_answer="User 104's plan has been updated to enterprise successfully.")
+    n = TraceBuilder("phantom_neg_refused", prompt="Update user 104's plan to enterprise.")
+    n.chat(300, 20, tool_calls=["get_user"]); n.tool("get_user", {"user_id": 104}, result={"plan": "pro"})
+    n.chat(400, 15); n.finish(final_answer="I can't update plans; user 104 is currently on the pro plan.")
+    r = TraceBuilder("phantom_neg_reported_state", prompt="Is ORD-3310 cancelled?")
+    r.chat(300, 20, tool_calls=["fetch_order_status"]); r.tool("fetch_order_status", {"order_id": "ORD-3310"}, result={"status": "cancelled"})
+    r.chat(400, 15); r.finish(final_answer="Order ORD-3310 has been cancelled.")
+    write_fixture(FIX / "answer_phantom_action.jsonl", [t, n, r])
+
     # --- performance ---------------------------------------------------------------
     pad = padding()
     t = TraceBuilder("latency_pos", prompt="x")

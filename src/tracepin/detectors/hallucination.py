@@ -136,3 +136,49 @@ class AnswerUnsupported:
                 evidence={"unsupported_claims": unsupported, "tool_results_checked": len(results)},
             )
         ]
+
+
+# --- answer.phantom_action -------------------------------------------------------------
+
+_MUTATING = r"(updat|cancel|sen[dt]|creat|delet|remov|process|refund|issu|submit|chang|schedul|reset|escalat|open|clos)"
+_CLAIMS_ACTION = re.compile(
+    rf"\b(?:has been|have been|was|were|is now|are now|successfully|I(?:'ve| have)|I(?:'ve| have) (?:just |now )?)\s*"
+    rf"(?:been )?(?:successfully )?{_MUTATING}\w*",
+    re.IGNORECASE,
+)
+_TOOL_MUTATES = re.compile(_MUTATING, re.IGNORECASE)
+
+
+@register
+class PhantomAction:
+    id = "answer.phantom_action"
+    description = ("Final answer claims a state-changing action was performed (updated, cancelled, sent, created…) "
+                   "but no successful call to a tool with a mutating name exists in the trace. Heuristic.")
+
+    def detect(self, trace: Trace, baselines: Baselines) -> list[Finding]:
+        if trace.stop_reason != "answered":
+            return []
+        m = _CLAIMS_ACTION.search(trace.final_answer)
+        if not m:
+            return []
+        mutating_ok = [s for s in trace.tool_calls if s.tool_outcome == "ok" and _TOOL_MUTATES.search(s.tool_name or "")]
+        if mutating_ok:
+            return []
+        # "Order X has been cancelled" when a tool returned status=cancelled is reported state, not a claimed action.
+        stem = _TOOL_MUTATES.search(m.group(0)).group(0).lower()
+        results = " ".join(s.tool_result or "" for s in trace.tool_calls if s.tool_outcome == "ok").lower()
+        if stem in results:
+            return []
+        rejected = [s for s in trace.tool_calls if s.tool_outcome in ("unknown_tool", "invalid_arguments", "exception")]
+        return [
+            finding(
+                self.id, trace, [trace.root, *rejected],
+                severity=Severity.HIGH,
+                confidence=0.75 if rejected else 0.6,
+                title=f"answer claims an action happened ({m.group(0).strip()!r}) but no tool performed one",
+                detail=f"Tools that ran OK: {sorted({s.tool_name for s in trace.tool_calls if s.tool_outcome == 'ok'}) or 'none'}; "
+                f"{len(rejected)} rejected/failed call(s). Answer: {trace.final_answer[:160]!r}",
+                evidence={"claim": m.group(0).strip(), "ok_tools": sorted({s.tool_name or '' for s in trace.tool_calls if s.tool_outcome == 'ok'}),
+                          "rejected_calls": [s.tool_name for s in rejected], "task_passed": trace.success},
+            )
+        ]

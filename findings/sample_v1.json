@@ -3739,6 +3739,7 @@
    "tool.unknown_name",
    "tool.confusable_name",
    "answer.unsupported",
+   "answer.phantom_action",
    "loop.repeated_call",
    "loop.cycle",
    "loop.retry_storm",
