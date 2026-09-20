@@ -9,3 +9,6 @@ traces/*
 findings/*
 !findings/.gitkeep
 !findings/sample_*.json
+!traces/run_v1_35lite_*.jsonl
+!traces/run_v2_35lite_*.jsonl
+!traces/run_v3_35lite_*.jsonl
