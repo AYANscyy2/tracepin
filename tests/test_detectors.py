@@ -68,6 +68,19 @@ def test_retry_storm_ignores_single_retry():
     assert run_detector("loop_retry_storm.jsonl", "loop.retry_storm")["storm_neg_single_retry"] == []
 
 
+def test_near_duplicate_fires_on_one_field_guessing():
+    f = run_detector("loop_near_duplicate.jsonl", "loop.near_duplicate")
+    (hit,) = f["neardup_pos"]
+    assert hit.evidence["varying_paths"] == ["query.filters.category"] and hit.evidence["fruitless"]
+    assert hit.severity.value == "high" and len(hit.span_ids) == 5
+
+
+def test_near_duplicate_tolerates_distinct_lookups_that_return_data():
+    # four different orders, each lookup returns something different: a batch, not a loop
+    f = run_detector("loop_near_duplicate.jsonl", "loop.near_duplicate")
+    assert f["neardup_neg_distinct_lookups"] == []
+
+
 # --- arguments -----------------------------------------------------------------------
 
 def test_schema_invalid_fires_and_parses_fields():

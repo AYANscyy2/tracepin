@@ -76,6 +76,18 @@ def build():
     n.chat(300, 15); n.finish()
     write_fixture(FIX / "loop_retry_storm.jsonl", [t, m, n])
 
+    t = TraceBuilder("neardup_pos", prompt="refund policy?")
+    for cat in ("orders", "general", "returns", "policies", "support"):  # guessing one field, nothing comes back
+        t.chat(300, 20, tool_calls=["search_kb"])
+        t.tool("search_kb", {"query": {"terms": ["refund"], "filters": {"category": cat}}}, result=[])
+    t.finish(stop_reason="max_iterations", success=False, final_answer="")
+    n = TraceBuilder("neardup_neg_distinct_lookups", prompt="status of 4 orders")
+    for oid, st in (("ORD-1", "shipped"), ("ORD-2", "processing"), ("ORD-3", "delivered"), ("ORD-4", "shipped")):
+        n.chat(300, 20, tool_calls=["fetch_order_status"])
+        n.tool("fetch_order_status", {"order_id": oid}, result={"order_id": oid, "status": st})
+    n.chat(500, 30); n.finish(final_answer="shipped, processing, delivered, shipped")
+    write_fixture(FIX / "loop_near_duplicate.jsonl", [t, n])
+
     # --- arguments -----------------------------------------------------------------
     t = TraceBuilder("schema_pos", prompt="x")
     t.chat(300, 20, tool_calls=["search_kb"]); t.tool("search_kb", {"query": {"q": "a"}}, outcome="invalid_arguments", error=PYD_MISSING)

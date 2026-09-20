@@ -150,3 +150,81 @@ class RetryStorm:
                 )
             )
         return out
+
+
+NEAR_DUP_MIN = 4
+NEAR_DUP_MAX_DIFF = 1  # leaf paths that may differ between consecutive calls
+
+
+def _flatten(value, prefix: str = "") -> dict[str, str]:
+    """{'query.filters.category': 'api', 'query.terms[0]': 'x'} — leaf paths of the args."""
+    if isinstance(value, dict):
+        out = {}
+        for k, v in value.items():
+            out.update(_flatten(v, f"{prefix}.{k}" if prefix else str(k)))
+        return out
+    if isinstance(value, list):
+        out = {}
+        for i, v in enumerate(value):
+            out.update(_flatten(v, f"{prefix}[{i}]"))
+        return out
+    return {prefix: str(value).strip()}
+
+
+@register
+class NearDuplicate:
+    id = "loop.near_duplicate"
+    description = ("Same tool ≥4 times with arguments that differ in at most one leaf value per step: "
+                   "the agent is guessing one field (a category, a page) rather than learning from results.")
+
+    def detect(self, trace: Trace, baselines: Baselines) -> list[Finding]:
+        by_tool: dict[str, list] = defaultdict(list)
+        for s in trace.tool_calls:
+            if s.tool_name:
+                by_tool[s.tool_name].append(s)
+
+        out = []
+        for tool, all_spans in by_tool.items():
+            if len(all_spans) < NEAR_DUP_MIN:
+                continue
+            # Longest run of consecutive calls where each step changes at most one leaf.
+            # The run usually starts after a couple of shape-guessing rejections.
+            all_flats = [_flatten(s.tool_arguments) for s in all_spans]
+            best_start, best_len, start = 0, 1, 0
+            for i in range(1, len(all_spans)):
+                a, b = all_flats[i - 1], all_flats[i]
+                if len({p for p in set(a) | set(b) if a.get(p) != b.get(p)}) > NEAR_DUP_MAX_DIFF:
+                    start = i
+                if i - start + 1 > best_len:
+                    best_start, best_len = start, i - start + 1
+            spans = all_spans[best_start : best_start + best_len]
+            flats = all_flats[best_start : best_start + best_len]
+            if len(spans) < NEAR_DUP_MIN or len({fingerprint(s) for s in spans}) == 1:
+                continue  # too short, or byte-identical (repeated_call owns that)
+            changed = [{p for p in set(a) | set(b) if a.get(p) != b.get(p)} for a, b in zip(flats, flats[1:])]
+            varying = sorted({p for c in changed for p in c})
+            tried = {p: [f.get(p) for f in flats] for p in varying}
+            empty = sum(1 for s in spans if s.tool_outcome == "ok" and s.tool_result in ("[]", "{}", "null", ""))
+            failed = sum(1 for s in spans if s.is_error)
+            fruitless = empty + failed == len(spans)
+            ok_results = [s.tool_result for s in spans if s.tool_outcome == "ok"]
+            # A batch of distinct lookups that each returned something new is legitimate
+            # (four different order ids, four different statuses). Only flag when the
+            # calls were fruitless or kept returning the same thing.
+            if not fruitless and len(set(ok_results)) == len(spans) and empty == 0:
+                continue
+            out.append(
+                finding(
+                    self.id, trace, spans,
+                    severity=Severity.HIGH if fruitless else Severity.MEDIUM,
+                    confidence=min(1.0, 0.6 + 0.1 * (len(spans) - NEAR_DUP_MIN)) + (0.1 if fruitless else 0),
+                    title=f"{tool} called {len(spans)}× varying only {', '.join(varying) or 'nothing'}"
+                    + (" — every call came back empty or failed" if fruitless else ""),
+                    detail=f"Consecutive calls differ in ≤{NEAR_DUP_MAX_DIFF} argument; values tried: "
+                    + "; ".join(f"{p}={v}" for p, v in tried.items())[:300]
+                    + f". {empty} empty results, {failed} errors.",
+                    evidence={"tool": tool, "count": len(spans), "varying_paths": varying, "values_tried": tried,
+                              "empty_results": empty, "errors": failed, "fruitless": fruitless},
+                )
+            )
+        return out
