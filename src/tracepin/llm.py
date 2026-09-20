@@ -58,7 +58,11 @@ class LLM:
         self.model = model
         self.system_prompt = system_prompt
         self.temperature = temperature
-        self.client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+        self.client = genai.Client(
+            api_key=os.environ["GEMINI_API_KEY"],
+            # A hung request must fail loudly, not block the run forever.
+            http_options=types.HttpOptions(timeout=60_000),
+        )
         self.tools = [
             types.Tool(function_declarations=[types.FunctionDeclaration(**s) for s in tool_schemas])
         ]

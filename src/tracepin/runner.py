@@ -25,9 +25,10 @@ def run(
     otlp: bool = typer.Option(True, help="Also export to Jaeger at localhost:4318."),
     only: str = typer.Option("", help="Comma-separated task ids to run (default: all)."),
     pause: float = typer.Option(0.0, help="Seconds to sleep between tasks (free-tier pacing)."),
+    run_id: str = typer.Option("", help="Reuse a run id (appends to its trace file), e.g. to resume."),
 ):
     load_dotenv(".env"); load_dotenv(".env.local")
-    run_id = uuid.uuid4().hex[:12]
+    run_id = run_id or uuid.uuid4().hex[:12]
     out_path = out.format(run_id=run_id)
 
     # Import after dotenv so TRACEPIN_CAPTURE_CONTENT from .env is honoured.
