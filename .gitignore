@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+traces/*
+!traces/.gitkeep
+!traces/sample.jsonl
