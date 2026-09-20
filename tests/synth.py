@@ -60,7 +60,11 @@ class TraceBuilder:
         return sid
 
     def chat(self, input_tokens=300, output_tokens=20, duration_ms=1500.0, tool_calls=(), system=None,
-             transport_retries=0):
+             transport_retries=0, retries=(), status="UNSET"):
+        """`retries` is a list of (attempt_ms, delay_s): each failed attempt ends in a
+        tracepin.transport.retry event followed by the recorded sleep; duration_ms is then
+        the final attempt only, exactly as llm.py records it."""
+        transport_retries = transport_retries or len(retries)
         attrs = {
             "gen_ai.operation.name": "chat", "gen_ai.system": "gemini",
             "gen_ai.request.model": "gemini-3.1-flash-lite", "gen_ai.request.temperature": 0.0,
@@ -74,8 +78,16 @@ class TraceBuilder:
         if system:
             events.append({"name": "gen_ai.client.inference.operation.details", "timestamp": _ts(self.clock),
                            "attributes": {"gen_ai.system_instructions": system, "gen_ai.input.messages": "[]"}})
+        cursor = self.clock
+        for i, (attempt_ms, delay_s) in enumerate(retries, 1):
+            cursor += timedelta(milliseconds=attempt_ms)
+            events.append({"name": "tracepin.transport.retry", "timestamp": _ts(cursor),
+                           "attributes": {"attempt": i, "delay_s": float(delay_s)}})
+            cursor += timedelta(seconds=delay_s)
+        total_ms = (cursor - self.clock).total_seconds() * 1000 + duration_ms
         self.iteration += 1
-        return self._span("chat gemini-3.1-flash-lite", "SpanKind.CLIENT", attrs, duration_ms, events=events)
+        return self._span("chat gemini-3.1-flash-lite", "SpanKind.CLIENT", attrs, total_ms, events=events,
+                          status=status, description="timeout" if status == "ERROR" else None)
 
     def tool(self, name, args, outcome="ok", result=None, error=None, duration_ms=0.1):
         attrs = {"gen_ai.operation.name": "execute_tool", "gen_ai.tool.name": name,

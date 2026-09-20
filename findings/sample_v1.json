@@ -985,7 +985,8 @@
     }
    ],
    "finding_ids": [
-    "args.schema_invalid"
+    "args.schema_invalid",
+    "perf.unaccounted_time"
    ]
   },
   {
@@ -1675,7 +1676,9 @@
    "output_tokens": 0,
    "final_answer": "",
    "timeline": [],
-   "finding_ids": []
+   "finding_ids": [
+    "perf.unaccounted_time"
+   ]
   }
  ],
  "findings": [
@@ -2060,6 +2063,46 @@
    "scope": "trace"
   },
   {
+   "detector_id": "perf.unaccounted_time",
+   "severity": "high",
+   "confidence": 0.9,
+   "trace_id": "0x4b224c58c129915e5daae475ef9b9e45",
+   "task_id": "t032",
+   "span_ids": [
+    "0x2900d40f17d32ba6",
+    "0x2900d40f17d32ba6"
+   ],
+   "title": "82s of 105s wall clock (78%) is unaccounted for",
+   "detail": "2 hole(s); largest 60s in chat attempt 1 that never returned (recorded backoff 20s does not cover it)",
+   "evidence": {
+    "wall_ms": 105025.4,
+    "unaccounted_ms": 82416.4,
+    "share": 0.785,
+    "holes": [
+     {
+      "kind": "request_no_response",
+      "span_id": "0x2900d40f17d32ba6",
+      "attempt": 1,
+      "start_ns": 1789915774161419008,
+      "end_ns": 1789915834189462784,
+      "ms": 60028.0,
+      "recorded_backoff_s": 20.0
+     },
+     {
+      "kind": "request_no_response",
+      "span_id": "0x2900d40f17d32ba6",
+      "attempt": 2,
+      "start_ns": 1789915854189462784,
+      "end_ns": 1789915876577858048,
+      "ms": 22388.4,
+      "recorded_backoff_s": 20.0
+     }
+    ]
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
    "detector_id": "loop.near_duplicate",
    "severity": "high",
    "confidence": 0.9,
@@ -2100,6 +2143,36 @@
     "function": "search_kb",
     "line": 36
    },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.unaccounted_time",
+   "severity": "high",
+   "confidence": 0.9,
+   "trace_id": "0x01a578d2d985a955ddd0d6ae1dbd37f9",
+   "task_id": "t044",
+   "span_ids": [
+    "0x05039672b737fade"
+   ],
+   "title": "1128s of 1277s wall clock (88%) is unaccounted for",
+   "detail": "1 hole(s); largest 1128s in chat attempt 4 that never returned (recorded backoff 144s does not cover it)",
+   "evidence": {
+    "wall_ms": 1277434.5,
+    "unaccounted_ms": 1127821.8,
+    "share": 0.883,
+    "holes": [
+     {
+      "kind": "request_no_response",
+      "span_id": "0x05039672b737fade",
+      "attempt": 4,
+      "start_ns": 1789917600680983040,
+      "end_ns": 1789918728502763008,
+      "ms": 1127821.8,
+      "recorded_backoff_s": 144.0
+     }
+    ]
+   },
+   "code_location": null,
    "scope": "trace"
   },
   {
@@ -3712,7 +3785,7 @@
   }
  ],
  "summary": {
-  "total": 59,
+  "total": 61,
   "by_detector": {
    "error.self_correction_cost": 16,
    "args.schema_invalid": 15,
@@ -3721,15 +3794,16 @@
    "loop.retry_storm": 4,
    "tool.unknown_name": 3,
    "loop.near_duplicate": 3,
+   "perf.unaccounted_time": 2,
    "args.type_confusion": 1
   },
   "by_severity": {
-   "high": 16,
+   "high": 18,
    "medium": 26,
    "low": 17
   },
-  "traces_with_findings": 20,
-  "traces_with_high": 10,
+  "traces_with_findings": 21,
+  "traces_with_high": 12,
   "detectors_run": [
    "args.schema_invalid",
    "args.type_confusion",
@@ -3746,7 +3820,8 @@
    "loop.near_duplicate",
    "perf.latency_outlier",
    "perf.context_bloat",
-   "perf.token_spike"
+   "perf.token_spike",
+   "perf.unaccounted_time"
   ]
  }
 }

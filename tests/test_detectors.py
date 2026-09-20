@@ -191,6 +191,20 @@ def test_token_spike_fires_on_ramble():
     assert len(f["spike_pos"]) == 1 and f["spike_neg"] == []
 
 
+def test_unaccounted_time_fires_on_request_that_never_returned():
+    f = run_detector("perf_unaccounted_time.jsonl", "perf.unaccounted_time")
+    (hit,) = f["unaccounted_pos"]
+    assert hit.severity.value == "high" and hit.evidence["share"] > 0.5
+    (hole,) = hit.evidence["holes"]
+    assert hole["kind"] == "request_no_response" and hole["attempt"] == 1 and 59_000 < hole["ms"] < 61_000
+    assert hole["recorded_backoff_s"] == 20.0 and hit.span_ids == [hole["span_id"]]
+
+
+def test_unaccounted_time_silent_when_backoff_explains_the_span():
+    f = run_detector("perf_unaccounted_time.jsonl", "perf.unaccounted_time")
+    assert f["unaccounted_neg_backoff"] == []
+
+
 # --- error handling ------------------------------------------------------------------
 
 def test_error_ignored_high_when_answer_hides_failure():

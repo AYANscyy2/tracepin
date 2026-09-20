@@ -100,3 +100,16 @@ Run `run_v1_35lite_c506b6cf636b` (prompt v1, `gemini-3.5-flash-lite`, 35/44):
 - t032 and t036 (the v2 regressions) pass again: the retry cap only hurt because the tool
   was undocumented.
 - Still failing: t024 (checker wants `2026-09-23`, model writes "September 23, 2026").
+
+## 8. `perf.unaccounted_time`: a 63-minute hole the timeout never closed
+
+- Run c506b6cf636b (v1, 3.5-flash-lite), t036: 3,811 s of a 3,836 s trace is one chat
+  attempt that never returned. `llm.py` sets `HttpOptions(timeout=60_000)`; the recorded
+  backoff for that span is 20 s. Neither explains an hour. Same shape at 60 s in t032/t033
+  (that one *is* the timeout firing) and 1,128 s in t044 of the 3.1 run.
+- The detector splits each chat span into HTTP attempts using the `tracepin.transport.retry`
+  events and subtracts the recorded `delay_s` sleeps; whatever is left and returned nothing
+  is a hole. Root-level gaps between children are counted the same way.
+- This is the wall-clock number behind "v1 → v2: −93% wall clock" — most of that was
+  one hang, not the prompt. `compare` reports aggregate deltas; this finding says which
+  ones to believe.

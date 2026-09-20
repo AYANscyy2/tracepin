@@ -2468,7 +2468,8 @@
    "loop.near_duplicate",
    "perf.latency_outlier",
    "perf.context_bloat",
-   "perf.token_spike"
+   "perf.token_spike",
+   "perf.unaccounted_time"
   ]
  }
 }

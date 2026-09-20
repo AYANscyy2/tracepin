@@ -8,7 +8,7 @@ Three layers, one per day:
 
 1. **Instrument** (Day 1) — a hand-rolled agent loop emitting OTel GenAI spans; rejected
    tool calls are spans too, and every executed tool span carries `code.*` attributes.
-2. **Detect** (Day 2) — 16 detectors over the trace file, a findings JSON, a `rich` report
+2. **Detect** (Day 2) — 17 detectors over the trace file, a findings JSON, a `rich` report
    that exits 1 on HIGH findings, and a regression diff between two runs.
 3. **Root-cause UI** (Day 3) — reads the findings file; does not re-run detectors.
 
@@ -89,7 +89,7 @@ tracepin analyze traces/run_<id>.jsonl                 # -> findings/run_<id>.js
 tracepin report  findings/run_<id>.json                # exit 1 if any HIGH finding
 tracepin report  findings/run_<id>.json --trace t041   # one trace, full timeline
 tracepin compare findings/run_v1.json findings/run_v2.json   # exit 1 if anything regressed
-pytest                                                 # 36 tests, one +/- pair per detector
+pytest                                                 # 38 tests, one +/- pair per detector
 ```
 
 Detectors are pure functions `(Trace, Baselines) -> list[Finding]` over a typed model
@@ -116,6 +116,7 @@ labelled:
 | `perf.latency_outlier` | > median + 3·MAD and > 2× median for that tool, n ≥ 5, first call excluded | LOW→HIGH by ratio |
 | `perf.context_bloat` | input tokens last > 3× first or superlinear growth across chat turns | MED/HIGH |
 | `perf.token_spike` | output tokens far above run median (rambling) | LOW |
+| `perf.unaccounted_time` | wall time no span explains: gaps under the root, and chat attempts that returned nothing beyond the recorded backoff sleeps (found a 63-minute hang the 60 s HTTP timeout never fired on) | LOW→HIGH by share |
 | `error.ignored` | tool failed, no later success, agent answered anyway; HIGH if the answer hides it | LOW/HIGH |
 | `error.no_progress` | `max_iterations`; spinning (few distinct calls, or one tool that never worked) vs exploring | MED/HIGH |
 | `error.self_correction_cost` | rejected call → later success; turns, tokens and ms spent recovering | LOW |

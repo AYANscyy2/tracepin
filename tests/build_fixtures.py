@@ -174,6 +174,21 @@ def build():
     n.chat(300, 22); n.finish()
     write_fixture(FIX / "perf_token_spike.jsonl", [*padding(), t, n])
 
+    # --- unaccounted time -----------------------------------------------------------
+    # Positive: attempt 1 hangs 60s (the HTTP timeout) and returns nothing; the retry event's
+    # 20s backoff explains the sleep but nothing explains the 60s. Lifted from t032 in run v1.
+    t = TraceBuilder("unaccounted_pos", prompt="refund policy for annual plans?")
+    t.chat(300, 20, tool_calls=["search_kb"], retries=[(60000, 20)], duration_ms=1500)
+    t.tool("search_kb", {"query": {"terms": ["refund"], "filters": {"category": "billing"}}}, result=[{"id": "kb-2"}])
+    t.chat(340, 15); t.finish(final_answer="kb-2")
+    # Negative: two 429 retries whose attempts each took a normal ~1.5s; the backoff sleeps
+    # account for the whole span. Slow because rate-limited, not because time went missing.
+    n = TraceBuilder("unaccounted_neg_backoff", prompt="x")
+    n.chat(300, 20, tool_calls=["calculate"], retries=[(1500, 15), (1500, 20)], duration_ms=1500)
+    n.tool("calculate", {"expression": "1+1"}, result=2.0)
+    n.chat(340, 15); n.finish()
+    write_fixture(FIX / "perf_unaccounted_time.jsonl", [t, n] + padding())
+
     # --- error handling ------------------------------------------------------------
     t = TraceBuilder("ignored_pos", prompt="status of ORD-9054?")
     t.chat(300, 20, tool_calls=["fetch_order_status"]); t.tool("fetch_order_status", {"order_id": "ORD-9054"}, outcome="exception", error=HTTP500)
