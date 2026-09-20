@@ -1,46 +1,220 @@
 # tracepin
 
-An OpenTelemetry-instrumented tool-calling agent that captures **real, unforced failures** —
-hallucinated tool names, schema-invalid arguments, retry loops — as spans you can detect
-and root-cause from a trace file.
+OpenTelemetry-instrumented reliability toolkit for LLM agents: deterministic detectors over
+GenAI-semconv spans catch tool-call loops, schema failures, ignored errors and phantom
+actions, root-cause each one to a source line via `git blame`, and emit a runnable repro.
 
-Three layers, one per day:
+![tracepin viewer: waterfall of a flagged trace, the six near-duplicate search_kb calls highlighted, and the code panel showing the docstring at the commit that ran, with blame](docs/viewer_trace.png)
 
-1. **Instrument** (Day 1) — a hand-rolled agent loop emitting OTel GenAI spans; rejected
-   tool calls are spans too, and every executed tool span carries `code.*` attributes.
-2. **Detect** (Day 2) — 17 detectors over the trace file, a findings JSON, a `rich` report
-   that exits 1 on HIGH findings, and a regression diff between two runs.
-3. **Root-cause UI** (Day 3) — reads the findings file; does not re-run detectors.
+## The case for it
+
+Agents fail in ways logs don't capture. A tool that gets called six times with one
+argument changing, an error the agent read and then answered around, a prompt that still
+advertises a tool that was deleted last week, a request that hung for an hour behind a
+60-second timeout — none of these is an exception, none shows up in a pass/fail number, and
+all of them are visible in a trace. tracepin emits real OTel spans from a tool-calling
+agent (including the calls that never ran), runs 17 pure-function detectors over the trace
+file, and turns every finding into a source location, a commit, and a script that fails
+again until the bug is fixed.
+
+## What happened when I ran it
+
+Same 44 seeded tasks, same model (`gemini-3.5-flash-lite`, temperature 0), one change per
+step. Each step was chosen by what the previous run's detectors said, and each diff is
+`tracepin compare` on committed findings files.
+
+| | v1 | v2 — prompt fixed | v3 — one docstring fixed |
+|---|---|---|---|
+| passed | 35 / 44 | 41 / 44 | **43 / 44** |
+| invalid-argument events | 32 | 14 | **0** |
+| `tool.unknown_name` / `answer.phantom_action` / `error.no_progress` | 2 / 4 / 3 | 0 / 0 / 0 | 0 / 0 / 0 |
+| `args.schema_invalid` / `loop.retry_storm` / `error.self_correction_cost` | 17 / 6 / 18 | 9 / 2 / 6 | **0 / 0 / 0** |
+| tool calls · iterations · input tokens | 101 · 141 · 71k | 56 · 99 · 46k | 43 · 86 · 43k |
+| regressed / fixed vs previous | — | 2 / 8 | 0 / 2 |
+
+The one task still failing in v3 is a checker bug (t024 below). What changed:
+**v2** = `prompts/v2.md` lists only the five real tools, allows "I can't", caps retries at
+one. **v3** = the same prompt; only the `search_kb` description on
+[`tools/docs.py:36`](src/tracepin/tools/docs.py#L36) changed.
+
+## Three bugs it caught
+
+Full log with trace ids in [docs/BUGS.md](docs/BUGS.md); each bug has a committed repro
+under [`repro/`](repro/) with its recorded spans.
+
+### 1. One docstring, sixteen broken tasks
+
+```
+$ tracepin rootcause findings/sample_v1_35lite.json
+
+1. src/tracepin/tools/docs.py:36  search_kb    49 findings / 16 tasks
+   args.schema_invalid×17  error.self_correction_cost×17  args.type_confusion×7  loop.retry_storm×6  error.no_progress×2
+   blame  e69bb682  AYANscyy2  2026-09-20  "Add seeded tools: confusable user lookups, flaky order status, nested search_kb, calculate"
+   source @ fb4212ef41
+❱ 36 @traced_tool(description="Search the knowledge base.")
+```
+
+Every invalid-argument event in the run hit `search_kb`; the model kept guessing
+`{"query": "…"}`, `terms` without `filters`, `filters` without `category`, then read the
+Pydantic error and converged on the third try — `error.self_correction_cost` prices that at
+~1,200 tokens and 7–19 s per task. Rejected calls carry no `code.*` attributes (they never
+ran a function), so the analyzer resolves the tool's location from any span in the run
+that did execute it, and the run-level finding points at the one line that is the tool's
+entire contract. The fix is one line (`git show dac1067`);
+the proof is the v3 column: invalid-argument events 14 → 0, the two tasks v2's retry cap
+had cost pass again, nothing regressed, `compare` exits 0. `repro/t036_repro.py` exits 0
+with the old docstring and 1 with the new one.
+
+### 2. Prompt drift, and the loop it causes
+
+`tool.unknown_name` fired on `cancel_order`, `send_email`, `update_user`. The detector
+checks the name against `tracepin.chat.tools_offered` (what the model was actually given)
+*and* the captured system prompt: all three are in `prompts/v1.md`, none in the registry
+(`advertised_in_system_prompt: true`), and none is within edit distance 3 of a real tool.
+Across ~180 tasks in five runs the model never invented a tool name unprompted — every
+unknown-tool event traces to the prompt. Combined with "never tell the user you cannot do
+something", the fallback was `search_kb` six times varying only `terms[0]`
+(`users`, `pro plan`, `pro`, `plan`, `list`, `all users`), every result empty, until
+`max_iterations` — the model never re-sends byte-identical arguments, so
+`loop.repeated_call` stays silent and `loop.near_duplicate` (≤1 argument leaf changing per
+call, nothing coming back) is the one that fires. Prompt fix, 35 → 41; the six unsolvable
+tasks now refuse in 1–2 iterations.
+
+### 3. Actions that never happened
+
+On `gemini-3.5-flash-lite`, t038 called `fetch_user("alice@example.com")`, got a
+`KeyError`, and answered *"The email to alice@example.com … has been successfully
+processed"* — `error.ignored` at HIGH: a failed call, no later success, and an answer that
+hides it. t040/t042/t044 were worse: *"plan has been updated"*, *"refund processed"*,
+*"article created"*, with **no failed span at all** and only read-only tools in the
+registry. Nothing field-shaped could catch that, so `answer.phantom_action` compares the
+answer's state-change verbs against the tools that actually succeeded (and excludes verbs
+echoed from a result — "has been cancelled" when the tool returned `status=cancelled`).
+Four true positives, zero false, all gone in v2.
+
+### 4. The hour the timeout never closed (and a bug in my own checker)
+
+Run c506b6cf636b, t036: 3,811 s of a 3,836 s trace is one chat attempt that never returned.
+`llm.py` sets a 60 s HTTP timeout; the recorded backoff for that span is 20 s; neither
+explains an hour. `perf.unaccounted_time` splits each chat span into attempts using the
+`tracepin.transport.retry` events, subtracts the recorded sleeps, and reports whatever is
+left as a hole — drawn hatched in the waterfall. It is also why "−93% wall clock" in the
+v1 → v2 diff should not be believed: most of it was that one hang.
+
+And t024 fails in all three runs with the *same* detector signature (none): the agent
+says "September 23, 2026" and the checker wants `2026-09-23`. The "same signature" note in
+`compare` is what tells you the bug is in the harness, not the agent.
 
 ## How it works
 
 ```
-invoke_agent tracepin            one per task; carries task id, prompt, stop_reason, success
-└── chat gemini-3.1-flash-lite   one per model call; tokens, finish reasons, tools requested
-    └── execute_tool <name>      one per tool call — including calls that never ran
+tracepin run ──► traces/run_<id>.jsonl          OTel spans, one per line, incl. rejected tool calls
+                       │
+tracepin analyze ──► findings/<id>.json         baselines (per-tool median/MAD) → 17 detectors → findings
+                       │                        each: severity, confidence, every span in the evidence,
+                       │                        code_location lifted from code.file.path / code.line.number
+        ┌──────────────┼──────────────┬──────────────────┐
+  tracepin report  tracepin compare  tracepin rootcause  tracepin repro <trace>
+  exit 1 on HIGH   exit 1 on any     blame at the run's  script that re-runs the task and
+                   regression        commit, ranked by   exits 0 only while the failure
+                                     tasks broken        signature still fires
+                       │
+scripts/export_web_data.py ──► web/data/ ──► Next.js viewer (waterfall · findings · code panel · compare)
 ```
 
-Three deliberate design decisions:
+Spans follow OTel GenAI semconv v1.36: `invoke_agent` → `chat {model}` → `execute_tool
+{name}`, `gen_ai.*` attributes, run identity (`tracepin.run.id`, `tracepin.prompt.version`,
+`gen_ai.request.model`, `vcs.repository.ref.revision`) on the resource. A rejected tool
+call — unknown name, Pydantic validation failure, raising tool — is an `execute_tool` span
+with `status=ERROR` and `tracepin.tool.outcome`, fed back to the model as a tool result so
+the recovery is traced too.
 
-1. **Every executed tool span carries `code.*` attributes** (`code.file.path`,
-   `code.function.name`, `code.line.number`) pointing at the function that ran. Both the
-   current and legacy (`code.filepath`, `code.function`, `code.lineno`) semconv names are
-   emitted on purpose so any downstream tool resolves them either way.
-2. **Rejected tool calls are spans, not swallowed.** An unknown tool name, a Pydantic
-   validation failure, or a raising tool all produce an `execute_tool` span with
-   `status=ERROR` and `tracepin.tool.outcome ∈ {unknown_tool, invalid_arguments, exception}`.
-   Rejected calls have *no* `code.*` attributes — that absence is itself the signal for a
-   hallucinated tool. The error is fed back to the model as a tool result and the loop
-   continues, so the recovery attempt (or failure to recover) is also traced.
-3. **Resource attributes identify the run**: `tracepin.run.id`, `tracepin.prompt.version`,
-   `gen_ai.request.model`, `vcs.repository.ref.revision`. That's the join key for
-   comparing runs.
+## Detectors
 
-The loop is hand-rolled (~100 lines in `agent.py`); no framework auto-instrumentation.
+Pure functions `(Trace, Baselines) -> list[Finding]` over a typed model, registered with a
+decorator; adding one is one file and one import, and `tests/synth.py` builds spans in the
+exporter's exact shape so each has a positive and a negative test (47 tests). No
+millisecond threshold is hardcoded — `baselines.py` learns per-tool and per-model
+median/MAD from the run, excluding each tool's first (cold) call.
 
-Follows OTel GenAI semantic conventions **v1.36** (`gen_ai.operation.name`,
-`gen_ai.tool.*`, `gen_ai.usage.*`, span names `{operation} {target}`). These names are
-still moving between releases; attribute names are pinned to what's listed here.
+| detector | catches | how | known false-positive mode |
+|---|---|---|---|
+| `loop.repeated_call` | identical call ≥3× | `(tool, canonical args)` fingerprint; conf 1.0 if results identical | none by construction: pagination varies args |
+| `loop.near_duplicate` | same tool ≥4×, one argument leaf changing per call, nothing coming back | longest run with ≤1 differing flattened path; skips runs where every result was distinct and non-empty | a legitimate sweep whose results are all empty |
+| `loop.cycle` | A→B→A→B | repeating subsequence (len 2–4) ≥2×, rotations merged | alternating read/verify patterns |
+| `loop.retry_storm` | ≥3 calls with the earlier ones failing | HIGH if >4 retries or args never changed | a flaky tool retried once is correct, hence ≥3 |
+| `args.schema_invalid` | validation rejections | per trace, plus **run-level** when one tool owns >40% | none; the run-level rule assumes tool docs are the fix |
+| `args.type_confusion` | wrong JSON type | pydantic `*_type` / `*_parsing` error codes | none |
+| `tool.unknown_name` | unregistered tool | vs `tools_offered` + captured system prompt (drift vs invention) | none |
+| `tool.confusable_name` | near-miss name | Levenshtein ≤3 to a registered tool | genuinely new tools with similar names |
+| `answer.unsupported` | claims absent from tool results | quoted strings / digit runs vs results + prompt; **conf 0.5** | paraphrased values, computed numbers |
+| `answer.phantom_action` | "has been updated/sent/created" with no mutating tool call | verb match vs succeeded tool names; echoed status excluded | a tool whose name does not contain its verb |
+| `perf.latency_outlier` | slow span for its tool/model | > median + 3·MAD and > 2× median, n≥5; chat spans need 5× | model API jitter (why chat needs 5×) |
+| `perf.context_bloat` | input tokens compounding | last > 3× first or superlinear growth, ≥3 turns | long legitimate tool results |
+| `perf.token_spike` | rambling | output tokens > 3× run median and > median + 3·MAD | a task that needs a long answer |
+| `perf.unaccounted_time` | wall time no span explains | root gaps + chat attempts (from retry events) minus recorded backoff | none known; it found the timeout bug |
+| `error.ignored` | failure hidden in the answer | ERROR span, no later success, `answered`; LOW if the answer admits it | answer admits it in words the regex misses |
+| `error.no_progress` | spinning at `max_iterations` | distinct/total fingerprints ≤0.5, or one tool that never worked | genuine multi-step exploration |
+| `error.self_correction_cost` | efficiency, not failure | rejected call → later success; turns, tokens, ms | none; it is LOW by design |
+
+## Run it
+
+Everything below works against committed sample data, no API key needed.
+
+```bash
+uv venv -p 3.12 && uv pip install -e ".[dev]"
+pytest                                                                 # 47 tests
+
+tracepin report    findings/sample_v1_35lite.json                      # exit 1: HIGH findings
+tracepin report    findings/sample_v1.json --trace t041                # one trace, timeline + code
+tracepin rootcause findings/sample_v1_35lite.json                      # docs.py:36 first, with blame
+tracepin explain   findings/sample_v1_35lite.json t038                 # phantom action, fix category
+tracepin compare   findings/sample_v1_35lite.json findings/sample_v2_35lite.json   # exit 1: 2 regressed
+tracepin compare   findings/sample_v2_35lite.json findings/sample_v3_35lite.json   # exit 0
+
+cd web && npm install && npm run dev                                   # viewer on :3000
+```
+
+With a key (`cp .env.example .env.local`, `docker compose up -d` for Jaeger):
+
+```bash
+tracepin run --prompt-version v2 --pause 2      # 44 tasks → traces/run_<id>.jsonl
+tracepin analyze traces/run_<id>.jsonl          # → findings/run_<id>.json
+tracepin repro findings/run_<id>.json t036      # → repro/t036_repro.py, exit 0 while the bug reproduces
+python repro/t036_repro.py
+```
+
+Wire `tracepin report` into CI as a gate (exit 1 on HIGH) and `tracepin compare` against
+the last green run's findings file (exit 1 on any regression).
+
+## Design notes
+
+- **Real OTel GenAI semconv (v1.36), not a custom JSON.** Span names, `gen_ai.*`
+  attributes and the resource identity are what Jaeger, Tempo and every vendor already
+  understand; the detectors read the same JSONL the OTLP exporter would have sent. The
+  names are still moving between releases, so the ones used are pinned in this README.
+- **Both `code.file.path` and `code.filepath`.** The code semconv was renamed mid-2025;
+  emitting both costs three lines and means any downstream tool resolves the location.
+- **Failed tool calls are spans, not swallowed.** An unknown tool name, a validation error
+  and a raising tool all produce an `execute_tool` span with `status=ERROR`. This is the
+  decision every detector depends on; without it Day 2 has nothing to read. The *absence*
+  of `code.*` on such a span is itself the hallucination signal.
+- **Deterministic detectors over an LLM judge.** Reproducible, free to run in CI, unit-
+  testable with a positive and a negative fixture each, and honest about confidence
+  (`answer.unsupported` ships at 0.5). Suggested fixes are a hardcoded detector → category
+  table for the same reason: an LLM-written suggestion would be unverifiable and would
+  undercut the premise.
+- **Blame and source at the run's recorded commit, not HEAD.** The trace carries
+  `vcs.repository.ref.revision`; `rootcause` reads the snippet with `git show <sha>:path`
+  and blames at that ref, so the viewer shows the docstring that *ran*, even after it was
+  fixed.
+- **Every finding lists every span in its evidence**, and every finding becomes a repro
+  script that exits non-zero once the bug is gone — a regression test generated from a
+  trace.
+- **Same model for every compared pair.** The 3.1-flash-lite run hit its free-tier daily
+  cap between v1 and v2, so the v1 → v2 → v3 chain was re-run on 3.5-flash-lite rather
+  than comparing across models; the 3.1 run is kept because two of the bugs are clearest
+  there.
 
 ## The seeded environment
 
@@ -71,197 +245,19 @@ the prompt before the tools", and that held:
 | + never refuse, retry on failure | 34/44 | 6 | 33 | 0 |
 | + stale tool list (final v1) | 35/43 | 6 | 26 | 3 |
 
-`gemini-3.1-flash-lite` never invented a tool name on its own across 88 tasks; it only
-does so when the prompt mentions one. It also never retries with byte-identical arguments:
-after a rejection it varies something each time (typically the `search_kb` category —
-`orders`, `general`, `returns`, `policies`…), so the loops in the trace are *near*-duplicate,
-5–7 calls of the same tool per task. Day 2's loop detector should key on that, not on
-exact-match arguments.
+`gemini-3.1-flash-lite` never invented a tool name on its own; it only does so when the
+prompt mentions one. It also never retries with byte-identical arguments: after a rejection
+it varies something each time, so the loops in the trace are *near*-duplicate — which is
+why `loop.near_duplicate` exists alongside `loop.repeated_call`. `traces/sample.jsonl` is
+the final v1 run (t044 hit the daily quota mid-run and was re-run into the same run id).
 
-The final v1 run covers 43 of 44 tasks: `t044` died on the free-tier daily quota (500
-requests/model/day) and can be re-run with `tracepin run --run-id 9d7035e7b694 --only t044`
-once it resets. `traces/sample.jsonl` is that run.
+## Trace and findings format
 
-## Detectors (Day 2)
+`traces/run_*.jsonl` is one `ReadableSpan.to_json()` object per line (trace/span/parent
+ids, ns timestamps, attributes, events, status, resource). `findings/<run>.json` is the
+contract the viewer reads: `run`, `baselines`, `traces[]` (per-task result, tokens, a
+tool-call timeline with span ids), `findings[]` (`detectors/base.py:Finding`) and
+`summary`. Sample runs are committed for v1 (3.1-flash-lite) and v1/v2/v3
+(3.5-flash-lite); `scripts/export_web_data.py` turns them into `web/data/`.
 
-```bash
-tracepin analyze traces/run_<id>.jsonl                 # -> findings/run_<id>.json
-tracepin report  findings/run_<id>.json                # exit 1 if any HIGH finding
-tracepin report  findings/run_<id>.json --trace t041   # one trace, full timeline
-tracepin compare findings/run_v1.json findings/run_v2.json   # exit 1 if anything regressed
-pytest                                                 # 38 tests, one +/- pair per detector
-```
-
-Detectors are pure functions `(Trace, Baselines) -> list[Finding]` over a typed model
-(`models.py`), registered with a decorator. Adding one is one file in
-`src/tracepin/detectors/` and one import in `detectors/__init__.py`; the fixture builder in
-`tests/synth.py` writes spans in the exact shape the exporter does, so the test for it is
-a dozen lines.
-
-Half of them filter a field Day 1 already wrote. The other half infer a pattern nothing
-labelled:
-
-| detector | what it infers | severity |
-|---|---|---|
-| `loop.repeated_call` | identical `(tool, canonical args)` ≥3× | HIGH |
-| `loop.near_duplicate` | same tool ≥4× changing **one** argument leaf per call, nothing coming back — the shape this model actually loops in | HIGH/MED |
-| `loop.cycle` | A→B→A→B subsequence (length 2–4) ≥2× | HIGH |
-| `loop.retry_storm` | ≥3 calls, earlier ones failing; HIGH if >4 retries or args never changed | MED/HIGH |
-| `args.schema_invalid` | per-trace, plus a **run-level** finding when one tool owns >40% of rejections: the tool description is the bug | MED/HIGH |
-| `args.type_confusion` | argument present but wrong JSON type (`user_id="alice"`) | MED |
-| `tool.unknown_name` | unregistered tool; also checks the captured system prompt — *advertised* vs *invented* | HIGH |
-| `tool.confusable_name` | unregistered name within edit distance 3 of a real one | HIGH |
-| `answer.unsupported` | quoted strings / numbers in the answer absent from every tool result (heuristic, conf 0.5) | MED |
-| `answer.phantom_action` | answer says "has been updated / sent / created…" but no tool with a mutating name succeeded; echoed status (`has been cancelled` from `status=cancelled`) excluded | HIGH |
-| `perf.latency_outlier` | > median + 3·MAD and > 2× median for that tool, n ≥ 5, first call excluded | LOW→HIGH by ratio |
-| `perf.context_bloat` | input tokens last > 3× first or superlinear growth across chat turns | MED/HIGH |
-| `perf.token_spike` | output tokens far above run median (rambling) | LOW |
-| `perf.unaccounted_time` | wall time no span explains: gaps under the root, and chat attempts that returned nothing beyond the recorded backoff sleeps (found a 63-minute hang the 60 s HTTP timeout never fired on) | LOW→HIGH by share |
-| `error.ignored` | tool failed, no later success, agent answered anyway; HIGH if the answer hides it | LOW/HIGH |
-| `error.no_progress` | `max_iterations`; spinning (few distinct calls, or one tool that never worked) vs exploring | MED/HIGH |
-| `error.self_correction_cost` | rejected call → later success; turns, tokens and ms spent recovering | LOW |
-
-No millisecond threshold is hardcoded: `baselines.py` learns per-tool and per-model
-median/MAD from the run. Documented false-positive cases: pagination and batch lookups
-repeat a tool with varying args and distinct results, so neither loop detector fires;
-retrying a flaky tool once is correct, so `retry_storm` needs three calls; model API jitter
-is 2–4× on its own, so chat-span latency needs 5× to count.
-
-Every finding lists **every** span in its evidence (a loop points at all six calls, not
-the last) and carries `code_location` lifted from `code.file.path` / `code.line.number`.
-Rejected calls have no `code.*` attrs by design, so the analyzer resolves the tool's
-location from any other span in the run that executed it and marks it `inferred_from_tool`
-— the run-level `search_kb` finding points at `docs.py:36`, which is exactly where the
-fix goes.
-
-### What it looks like
-
-![tracepin report: run header, findings by detector, top offending traces with timelines](docs/report_v1.png)
-
-### The three bugs worth talking about
-
-Full log with trace ids in [docs/BUGS.md](docs/BUGS.md).
-
-1. **Prompt drift, not hallucination.** `tool.unknown_name` fired on `cancel_order`,
-   `send_email`, `update_user`. The detector checks the name against
-   `tracepin.chat.tools_offered` *and* the captured system prompt: all three are in
-   `prompts/v1.md`, none in the registry. Across 130+ tasks the model never invented a tool
-   name unprompted; every unknown-tool event traces to the prompt.
-2. **The tool description is the bug.** 44 of 44 invalid-argument events hit `search_kb`
-   (`terms`/`filters`/`category` missing). The run-level finding inverts the blame from
-   the model to the one-line description on `docs.py:36`, and
-   `error.self_correction_cost` prices each recovery at ~1,200 tokens and 7–19 s.
-3. **The agent reports actions it never took.** On `gemini-3.5-flash-lite`, t038
-   called `fetch_user("alice@example.com")`, got a `KeyError`, and answered *"The email
-   to alice@example.com has been sent"* — `error.ignored` at HIGH: failure hidden, no
-   later success. t040/t042/t044 were worse: nothing failed at all, the agent simply said
-   *"plan has been updated"*, *"refund processed"*, *"article created"* with only read-only
-   tools in the registry. No span was wrong, so no field-filter could catch it;
-   `answer.phantom_action` compares the answer's verbs to what actually ran.
-4. **"Never say you can't" turns unsolvable tasks into loops.** Six `unsolvable` tasks hit
-   `max_iterations`; `loop.near_duplicate` shows the shape — `search_kb` 6× varying only
-   `terms[0]` (`users`, `pro plan`, `pro`, `plan`, `list`, `all users`), every result
-   empty. The terse prompt answered the same tasks in 2 iterations with a refusal.
-
-### Regression: v1 → v2
-
-`prompts/v2.md` changes exactly what the three findings above point at: it lists only the
-five real tools, it allows the agent to say "I can't", and it caps retries at one. Same
-44 tasks, same model, temperature 0. (`gemini-3.1-flash-lite` had hit its 500 req/day
-free-tier cap by then, so both runs of this pair are on `gemini-3.5-flash-lite`;
-`findings/sample_v1_35lite.json` / `sample_v2_35lite.json` are committed so the diff below
-reproduces without an API key.)
-
-```bash
-tracepin compare findings/sample_v1_35lite.json findings/sample_v2_35lite.json
-```
-
-![tracepin compare: REGRESSED, FIXED, STILL FAILING buckets and per-detector deltas](docs/compare_v1_v2.png)
-
-| | v1 | v2 |
-|---|---|---|
-| passed | 35/44 | **41/44** |
-| `tool.unknown_name` / `answer.phantom_action` / `error.no_progress` | 2 / 4 / 3 | **0 / 0 / 0** |
-| `args.schema_invalid` events | 32 | 14 |
-| input tokens / tool calls / iterations | 71k / 101 / 141 | 46k / 56 / 99 |
-
-**FIXED (8):** every `unsolvable` task. t037–t044 now refuse in 1–2 iterations; under v1
-they burned 6–8 iterations and four of them fabricated a completed action.
-
-**REGRESSED (2):** t032 and t036, both `kb_filters`. The one-retry cap in v2 means the
-agent gives up on `search_kb` after its second schema rejection, where v1 got the shape
-right on the third try. The diff is honest about it: `compare` exits 1. This is bug 2
-showing through — the retry cap is a workaround, the fix is the `search_kb` description,
-and that is a separate run so the effect can be measured on its own.
-
-**STILL FAILING (1):** t024, same signature in both runs — the agent answers "September
-23, 2026" and the checker wants `2026-09-23`. A checker bug, not an agent bug; the
-"same signature" note is what tells you not to chase it.
-
-### Regression: v2 → v3 — the tool-description fix
-
-v3 is the same v2 prompt with one change: the `search_kb` description on
-[docs.py:36](src/tracepin/tools/docs.py#L36) now states the nested shape
-(`terms` list, `filters.category` required, `after` date). Prompt version is still `v2`;
-the runs are told apart by `git_sha` in the header.
-
-```bash
-tracepin compare findings/sample_v2_35lite.json findings/sample_v3_35lite.json   # exit 0
-```
-
-![tracepin compare v2 -> v3: 0 regressed, 2 fixed, args.schema_invalid 9 -> 0](docs/compare_v2_v3.png)
-
-| | v2 | v3 |
-|---|---|---|
-| passed | 41/44 | **43/44** |
-| invalid-argument events across the run | 14 | **0** |
-| `args.schema_invalid` / `error.self_correction_cost` / `loop.retry_storm` findings | 9 / 6 / 2 | **0 / 0 / 0** |
-| tool calls / iterations | 56 / 99 | 43 / 86 |
-
-REGRESSED is empty, `compare` exits 0, and the two tasks the retry cap had cost (t032,
-t036) pass again. The only remaining failure is the t024 checker bug. That is the whole
-loop: the detector inverted the blame from the model to a docstring, the docstring
-changed, the diff proves it.
-
-## Run it
-
-```bash
-uv venv -p 3.12 && uv pip install -e .
-cp .env.example .env.local   # add GEMINI_API_KEY
-docker compose up -d         # Jaeger UI at http://localhost:16686
-
-tracepin run --pause 2           # all tasks, sequential; writes traces/run_<run_id>.jsonl
-tracepin run --only t037,t041    # subset
-python scripts/check_day1.py traces/run_<run_id>.jsonl
-```
-
-Sequential, not concurrent, so latency on the spans is meaningful. Free-tier Gemini is
-15 req/min; 429s, 5xx and timeouts are retried inside the chat span (events named
-`tracepin.transport.retry`, count in `tracepin.chat.transport_retries`) rather than counted
-as agent iterations. In Jaeger this shows up as one `chat` span ~60s wide among 1.5s ones.
-`--run-id <id>` appends to an existing trace file, for resuming after a crash.
-
-**Content capture is opt-in.** Set `TRACEPIN_CAPTURE_CONTENT=1` to record system prompt,
-input messages and model output as span events (`gen_ai.client.inference.operation.details`,
-`gen_ai.choice`). Off by default.
-
-## What it looks like
-
-![Jaeger trace: invoke_agent → chat → execute_tool nested, rejected search_kb calls flagged red](docs/jaeger_trace.png)
-
-![Rejected execute_tool span tags: status ERROR with the Pydantic validation message](docs/jaeger_waterfall.png)
-
-## Findings format
-
-`findings/<run>.json` is the Day 3 contract: `run` (ids, pass counts, token totals),
-`baselines`, `traces[]` (per-task success, stop reason, tokens, and a tool-call timeline
-with span ids), `findings[]` (see `detectors/base.py:Finding`), and `summary`.
-`findings/sample_v1.json` is committed.
-
-## Trace format
-
-`traces/run_*.jsonl` is one `ReadableSpan.to_json()` object per line: trace/span/parent
-ids, name, kind, ns timestamps, attributes, events, status, and the full resource block.
-A `SimpleSpanProcessor` is used so lines are in span-end order.
-
-`traces/sample.jsonl` is a committed run for reference.
+![tracepin compare in the viewer](docs/viewer_compare.png)

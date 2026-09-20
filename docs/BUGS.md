@@ -17,9 +17,9 @@ Kept as-we-go per the Day 2 spec §10. Trace ids are from `traces/run_9d7035e7b6
 
 ## 2. `search_kb` owns 100% of invalid-argument events — the tool description is the bug
 
-- `args.schema_invalid` run-level finding: 44/44 schema rejections hit `search_kb`,
-  across 16 tasks. Missing fields: `query.terms` ×26, `query.filters` ×26,
-  `query.filters.category` ×18.
+- `args.schema_invalid` run-level finding: 100% of schema rejections hit `search_kb` in
+  every v1 run (25 events / 14 tasks on 3.1-flash-lite, 32 / 16 on 3.5-flash-lite).
+  Missing fields are always `query.terms`, `query.filters`, `query.filters.category`.
 - The model tries the same wrong shapes every time (`{"query": {"query": "..."}}`,
   `{"terms": [...]}` with no `filters`, `filters: {}`), then reads the Pydantic error and
   converges in 2–3 turns. `error.self_correction_cost` prices that at ~1,100–1,400 tokens
@@ -28,8 +28,7 @@ Kept as-we-go per the Day 2 spec §10. Trace ids are from `traces/run_9d7035e7b6
   root cause seen from a different angle.
 - `code_location` on the finding points at `src/tracepin/tools/docs.py:36` — the
   `@traced_tool(description="Search the knowledge base.")` line. The fix is one docstring.
-- Fix candidate: v3 = same prompt, better `search_kb` description. Kept separate from v2 so
-  the regression diff isolates one variable at a time.
+- Fixed in v3 (bug 7 below): same prompt, better description, invalid-argument events 14 → 0.
 
 ## 3. "Never tell the user you cannot do something" turns unsolvable tasks into 8-iteration spins
 
