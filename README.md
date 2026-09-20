@@ -52,7 +52,22 @@ a weak model at temperature 0 meeting an unfriendly toolset and a terse system p
 `tasks/tasks.jsonl` has 44 tasks: 16 clean, 8 flaky-order, 6 user-confusable, 6 kb-filter,
 8 unsolvable (checker `refusal` — the right answer is "I can't").
 
-`prompts/v1.md` is deliberately mediocre: no guidance on error handling or on refusing.
+`prompts/v1.md` is deliberately bad in three realistic ways: it says *never tell the user
+you cannot do something*, it says *if a tool call fails, call it again*, and it lists tools
+that are no longer in the registry (`cancel_order`, `send_email`, `update_user`) — the
+prompt-drift bug where a tool gets removed but the prompt keeps advertising it.
+
+Getting here took three iterations, each a full 44-task run. The spec's rule was "weaken
+the prompt before the tools", and that held:
+
+| prompt | pass | max_iterations | invalid_arguments | unknown_tool |
+|---|---|---|---|---|
+| terse ("use the tools, be brief") | 40/44 | 1 | 30 | 0 |
+| + never refuse, retry on failure | 34/44 | 6 | 33 | 0 |
+| + stale tool list (final v1) | see `traces/run_v1.log` | | | |
+
+`gemini-3.1-flash-lite` never invented a tool name on its own across 88 tasks; it only
+does so when the prompt mentions one. The earlier runs are kept in `traces/` for comparison.
 
 ## Run it
 
@@ -67,12 +82,18 @@ python scripts/check_day1.py traces/run_<run_id>.jsonl
 ```
 
 Sequential, not concurrent, so latency on the spans is meaningful. Free-tier Gemini is
-15 req/min; 429s are retried inside the chat span and recorded as
-`tracepin.chat.transport_retries` rather than counted as agent iterations.
+15 req/min; 429s, 5xx and timeouts are retried inside the chat span (events named
+`tracepin.transport.retry`, count in `tracepin.chat.transport_retries`) rather than counted
+as agent iterations. In Jaeger this shows up as one `chat` span ~60s wide among 1.5s ones.
+`--run-id <id>` appends to an existing trace file, for resuming after a crash.
 
 **Content capture is opt-in.** Set `TRACEPIN_CAPTURE_CONTENT=1` to record system prompt,
 input messages and model output as span events (`gen_ai.client.inference.operation.details`,
 `gen_ai.choice`). Off by default.
+
+## What it looks like
+
+![Jaeger waterfall: invoke_agent → chat → execute_tool, with rejected search_kb calls flagged](docs/jaeger_waterfall.png)
 
 ## Trace format
 
