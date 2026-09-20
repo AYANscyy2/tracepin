@@ -16,7 +16,9 @@ export default async function TracePage({ params }: { params: Promise<{ traceId:
   const code = loadCode(runId);
   const label = listRuns().find((r) => r.run_id === runId)?.label ?? runId;
   const order = { high: 0, medium: 1, low: 2 } as const;
-  const findings = a.findings.filter((f) => f.trace_id === traceId).sort((x, y) => order[x.severity] - order[y.severity] || y.confidence - x.confidence);
+  // severity first; within a severity, latency outliers after real bugs (same rule as `tracepin explain`)
+  const perf = (f: { detector_id: string }) => (f.detector_id.startsWith("perf.") ? 1 : 0);
+  const findings = a.findings.filter((f) => f.trace_id === traceId).sort((x, y) => order[x.severity] - order[y.severity] || perf(x) - perf(y) || y.confidence - x.confidence);
 
   return (
     <div>
