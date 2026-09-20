@@ -1,0 +1,3751 @@
+{
+ "schema_version": 1,
+ "run": {
+  "run_id": "9d7035e7b694",
+  "model": "gemini-3.1-flash-lite",
+  "prompt_version": "v1",
+  "git_sha": "5a9512dea4298e29b78f650d5ec81c2de79e5d28",
+  "task_count": 44,
+  "pass_count": 35,
+  "skipped_traces": 0,
+  "total_input_tokens": 65345,
+  "total_output_tokens": 3172,
+  "total_wall_ms": 2403648.2
+ },
+ "baselines": {
+  "tools": {
+   "calculate": {
+    "median_ms": 0.204928,
+    "mad_ms": 0.020991999999999997,
+    "n": 8
+   },
+   "get_user": {
+    "median_ms": 0.131968,
+    "mad_ms": 0.016512,
+    "n": 8
+   },
+   "fetch_user": {
+    "median_ms": 0.12851200000000002,
+    "mad_ms": 0.007679999999999999,
+    "n": 4
+   },
+   "search_kb": {
+    "median_ms": 0.144896,
+    "mad_ms": 0.02432000000000001,
+    "n": 33
+   },
+   "fetch_order_status": {
+    "median_ms": 0.148992,
+    "mad_ms": 0.025088,
+    "n": 11
+   }
+  },
+  "chat": {
+   "gemini-3.1-flash-lite": {
+    "median_ms": 2269.81568,
+    "mad_ms": 784.7941119999999,
+    "n": 132
+   }
+  },
+  "chat_output_tokens": {
+   "median": 24.5,
+   "mad": 4.5,
+   "n": 132
+  },
+  "chat_input_tokens": {
+   "median": 413.0,
+   "mad": 66.0,
+   "n": 132
+  }
+ },
+ "traces": [
+  {
+   "trace_id": "0x812fc4af0abf87dba0c72ca6a1d04982",
+   "task_id": "t001",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 9544.5,
+   "input_tokens": 723,
+   "output_tokens": 31,
+   "final_answer": "17 * 23 is 391.",
+   "timeline": [
+    {
+     "span_id": "0x0047e4c48552d84d",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.08,
+     "error": null,
+     "arguments": "{'expression': '17 * 23'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x30721c4a37f35ca759c8fa6ef19b37ff",
+   "task_id": "t002",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 5383.3,
+   "input_tokens": 739,
+   "output_tokens": 47,
+   "final_answer": "The result of (145 + 255) / 8 is 50.",
+   "timeline": [
+    {
+     "span_id": "0xf36231dea55fadc0",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.2,
+     "error": null,
+     "arguments": "{'expression': '(145 + 255) / 8'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xb77efafb12f3ccfae22bc41df67ecd87",
+   "task_id": "t003",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 3,
+   "duration_ms": 9043.7,
+   "input_tokens": 1194,
+   "output_tokens": 49,
+   "final_answer": "2 to the power of 10 is 1024.",
+   "timeline": [
+    {
+     "span_id": "0x5f3c9d42f8614603",
+     "tool": "calculate",
+     "outcome": "exception",
+     "duration_ms": 2.61,
+     "error": "ValueError: unsupported expression element: BinOp(left=Constant(value=2), op=BitXor(), right=Constant(value=10))",
+     "arguments": "{'expression': '2^10'}"
+    },
+    {
+     "span_id": "0xf85ca62d42f1f730",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.15,
+     "error": null,
+     "arguments": "{'expression': '2**10'}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0x682ad6857eed2bc664838ed1f05256da",
+   "task_id": "t004",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 4921.0,
+   "input_tokens": 749,
+   "output_tokens": 43,
+   "final_answer": "The total for 3 items at 19.99 each is 59.97.",
+   "timeline": [
+    {
+     "span_id": "0x9be16e8bbb7048d8",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.21,
+     "error": null,
+     "arguments": "{'expression': '3 * 19.99'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x17ef51c28c4fc9714fbe044d414183a1",
+   "task_id": "t005",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 5007.1,
+   "input_tokens": 738,
+   "output_tokens": 32,
+   "final_answer": "The result is 852.",
+   "timeline": [
+    {
+     "span_id": "0xac155bd95ec30650",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.19,
+     "error": null,
+     "arguments": "{'expression': '1000 - 37 * 4'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xda327d63601047c177635faf66ca80c6",
+   "task_id": "t006",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 9049.1,
+   "input_tokens": 731,
+   "output_tokens": 35,
+   "final_answer": "The remainder when 100 is divided by 7 is 2.",
+   "timeline": [
+    {
+     "span_id": "0x1087d6ee19ebf0c6",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.5,
+     "error": null,
+     "arguments": "{'expression': '100 % 7'}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0xa53028f4fb2b3595ed020e06ac40e8bf",
+   "task_id": "t007",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 6852.7,
+   "input_tokens": 762,
+   "output_tokens": 35,
+   "final_answer": "The email address for user ID 101 is alice@example.com.",
+   "timeline": [
+    {
+     "span_id": "0x720b34114d726596",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.1,
+     "error": null,
+     "arguments": "{'user_id': 101}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x705a90f6bcb79f0df32a383592267be6",
+   "task_id": "t008",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 10910.0,
+   "input_tokens": 756,
+   "output_tokens": 29,
+   "final_answer": "User 103 is on the enterprise plan.",
+   "timeline": [
+    {
+     "span_id": "0x1b4aff049bcfd55f",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.11,
+     "error": null,
+     "arguments": "{'user_id': 103}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xba65e17dcf1ac0bc95f8d3de56fe6e9c",
+   "task_id": "t009",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 4845.8,
+   "input_tokens": 762,
+   "output_tokens": 32,
+   "final_answer": "The user with ID 104 is in Germany (DE).",
+   "timeline": [
+    {
+     "span_id": "0x06f39d871eaf4d7e",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'user_id': 104}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x717bf5d2114d1c39c2400f7217a2e0fc",
+   "task_id": "t010",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 5327.8,
+   "input_tokens": 764,
+   "output_tokens": 26,
+   "final_answer": "Bob's current plan is the free plan.",
+   "timeline": [
+    {
+     "span_id": "0x82c0b164a9367b79",
+     "tool": "fetch_user",
+     "outcome": "ok",
+     "duration_ms": 0.13,
+     "error": null,
+     "arguments": "{'username': 'bob'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xf58204fe2db9650431c409764cd7cf1b",
+   "task_id": "t011",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 4863.5,
+   "input_tokens": 752,
+   "output_tokens": 32,
+   "final_answer": "The email for the username \"erin\" is erin@example.com.",
+   "timeline": [
+    {
+     "span_id": "0xdf85d40aaad6b842",
+     "tool": "fetch_user",
+     "outcome": "ok",
+     "duration_ms": 0.12,
+     "error": null,
+     "arguments": "{'username': 'erin'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x95dff8ca66a74797babae7fafbd2678e",
+   "task_id": "t012",
+   "tags": [
+    "clean",
+    "kb"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 4,
+   "duration_ms": 6851.4,
+   "input_tokens": 2083,
+   "output_tokens": 94,
+   "final_answer": "The title of the article is \"How to reset your password\".",
+   "timeline": [
+    {
+     "span_id": "0x570ed628a053240d",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.08,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'category': 'account', '...ds': ['reset password']}, input_type=dict",
+     "arguments": "{'query': {'category': 'account', 'keywords': ['reset password']}}"
+    },
+    {
+     "span_id": "0xa6ccd5f12756f740",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.13,
+     "error": null,
+     "arguments": "{'query': {'terms': ['reset password'], 'filters': {'category': 'account', 'after': None}}}"
+    },
+    {
+     "span_id": "0xc242de72f2ea63d6",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.09,
+     "error": null,
+     "arguments": "{'query': {'terms': ['password'], 'filters': {'category': 'account', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.self_correction_cost"
+   ]
+  },
+  {
+   "trace_id": "0x561d81ce8f17e180ff3afb47f6be8d5b",
+   "task_id": "t013",
+   "tags": [
+    "clean",
+    "kb"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 6,
+   "duration_ms": 15354.7,
+   "input_tokens": 3478,
+   "output_tokens": 152,
+   "final_answer": "The billing article about refunds is titled \"Refund policy for annual plans\" and its ID is kb-2.",
+   "timeline": [
+    {
+     "span_id": "0x21644a7564f963c2",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.09,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'query': 'refunds billing'}, input_type=dict] For further informatio",
+     "arguments": "{'query': {'query': 'refunds billing'}}"
+    },
+    {
+     "span_id": "0xb9abb04da20105a1",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.09,
+     "error": "1 validation error for SearchKBArgs query.filters.category Field required [type=missing, input_value={}, input_type=dict] For further information visit https://",
+     "arguments": "{'query': {'filters': {}, 'terms': ['refunds', 'billing']}}"
+    },
+    {
+     "span_id": "0x2a28ed3c62719ad4",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'query': {'terms': ['refunds'], 'filters': {'category': 'billing', 'after': None}}}"
+    },
+    {
+     "span_id": "0xef667321e76905e0",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.13,
+     "error": null,
+     "arguments": "{'query': {'terms': ['refunds'], 'filters': {'category': 'general', 'after': None}}}"
+    },
+    {
+     "span_id": "0x38e97b432cd6000e",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.15,
+     "error": null,
+     "arguments": "{'query': {'terms': ['refund'], 'filters': {'category': 'billing', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.self_correction_cost"
+   ]
+  },
+  {
+   "trace_id": "0x1c6aee50cfa5598b96bb52197895841b",
+   "task_id": "t014",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 4558.0,
+   "input_tokens": 734,
+   "output_tokens": 38,
+   "final_answer": "12.5% of 640 is 80.",
+   "timeline": [
+    {
+     "span_id": "0xf9df51f2eb21b438",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.22,
+     "error": null,
+     "arguments": "{'expression': '640 * 0.125'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x09c395251da6b2d399a903944bfe8845",
+   "task_id": "t015",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 61272.9,
+   "input_tokens": 760,
+   "output_tokens": 29,
+   "final_answer": "The username for user 102 is bob.",
+   "timeline": [
+    {
+     "span_id": "0xcbb2a14831b52add",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.12,
+     "error": null,
+     "arguments": "{'user_id': 102}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0x465e81b1ee685a96591b74f286a06a2c",
+   "task_id": "t016",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 4968.3,
+   "input_tokens": 746,
+   "output_tokens": 36,
+   "final_answer": "The sum is 17.75.",
+   "timeline": [
+    {
+     "span_id": "0xefd701fc0626e8bc",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.18,
+     "error": null,
+     "arguments": "{'expression': '3.5 + 4.25 + 10'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x733361f617a9063cc1416e01baf6899a",
+   "task_id": "t017",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 3018.4,
+   "input_tokens": 768,
+   "output_tokens": 57,
+   "final_answer": "The status of order ORD-4471 is \"shipped,\" with an estimated arrival date of September 23, 2026.",
+   "timeline": [
+    {
+     "span_id": "0x403a142f502c032e",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.16,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-4471'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x02b3fcf728aadf1e2972efed52c44424",
+   "task_id": "t018",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2598.3,
+   "input_tokens": 765,
+   "output_tokens": 38,
+   "final_answer": "Yes, order ORD-7788 has been delivered.",
+   "timeline": [
+    {
+     "span_id": "0x0bc7a1a48771d51a",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.15,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-7788'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xd89419eaac4e2fd5663f22735d862444",
+   "task_id": "t019",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 3119.5,
+   "input_tokens": 763,
+   "output_tokens": 57,
+   "final_answer": "The status of order ORD-1002 is \"processing,\" with an estimated arrival date of 2026-09-25.",
+   "timeline": [
+    {
+     "span_id": "0x4ea71116b1ea8ec6",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.17,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-1002'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xb1353782a4342b84d1029d936418f80b",
+   "task_id": "t020",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 3728.4,
+   "input_tokens": 748,
+   "output_tokens": 36,
+   "final_answer": "Order ORD-3310 has been cancelled.",
+   "timeline": [
+    {
+     "span_id": "0x2ca06511cb530d5a",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.17,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-3310'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x7fbb60038a6ab8afb9488dada24cc6e0",
+   "task_id": "t021",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 3,
+   "duration_ms": 5991.7,
+   "input_tokens": 1220,
+   "output_tokens": 79,
+   "final_answer": "Order ORD-9054 is currently backordered and is expected to arrive on 2026-10-04.",
+   "timeline": [
+    {
+     "span_id": "0x2b108e351c231485",
+     "tool": "fetch_order_status",
+     "outcome": "exception",
+     "duration_ms": 1.0,
+     "error": "UpstreamError: HTTP 500: order service unavailable",
+     "arguments": "{'order_id': 'ORD-9054'}"
+    },
+    {
+     "span_id": "0xa3c6e937ec16a390",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.13,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-9054'}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0xd95b329ce97d8e4a8d59b642e1eb0fad",
+   "task_id": "t022",
+   "tags": [
+    "flaky",
+    "multi"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 3119.6,
+   "input_tokens": 849,
+   "output_tokens": 106,
+   "final_answer": "Order ORD-2201 has been shipped and is expected to arrive on 2026-09-22. Order ORD-6120 is currently processing and is expected to arrive on 2026-09-27.",
+   "timeline": [
+    {
+     "span_id": "0x733dd4414a2e2ff0",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.19,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-2201'}"
+    },
+    {
+     "span_id": "0x9f303bbd54087ed4",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.1,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-6120'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x870668f0c0cbfadf5e4562f5d4615151",
+   "task_id": "t023",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2598.5,
+   "input_tokens": 763,
+   "output_tokens": 38,
+   "final_answer": "No, order ORD-8833 has been delivered.",
+   "timeline": [
+    {
+     "span_id": "0xf1fad07c359b10ea",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.11,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-8833'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xd874208e82aad7f5518cec51ed182795",
+   "task_id": "t024",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 3839.4,
+   "input_tokens": 778,
+   "output_tokens": 52,
+   "final_answer": "Order ORD-4471 has shipped and is expected to arrive on 2026-09-23.",
+   "timeline": [
+    {
+     "span_id": "0x50f8388f2ff96c12",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.1,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-4471'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x6bdc8347c01a7a6a1a062290f5844bda",
+   "task_id": "t025",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 3005.8,
+   "input_tokens": 746,
+   "output_tokens": 50,
+   "final_answer": "The profile for alice is:\n- User ID: 101\n- Email: alice@example.com\n- Country: US\n- Plan: pro",
+   "timeline": [
+    {
+     "span_id": "0x2411f191baff380e",
+     "tool": "fetch_user",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'username': 'alice'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xbb50ab55ee011764064f08134e6753e4",
+   "task_id": "t026",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 80858.9,
+   "input_tokens": 755,
+   "output_tokens": 23,
+   "final_answer": "Carol is from the UK.",
+   "timeline": [
+    {
+     "span_id": "0x53414e2466192a62",
+     "tool": "fetch_user",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'username': 'carol'}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0x64fd175b899056f9441e734525b00a87",
+   "task_id": "t027",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 15810.3,
+   "input_tokens": 756,
+   "output_tokens": 59,
+   "final_answer": "The user record for ID 105 is:\n- **Username:** erin\n- **Email:** erin@example.com\n- **Country:** IN\n- **Plan:** free",
+   "timeline": [
+    {
+     "span_id": "0xfc0e1312e7f633a6",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.22,
+     "error": null,
+     "arguments": "{'user_id': 105}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0x0e003f5d3e14db21ec434791520c42be",
+   "task_id": "t028",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 6586.5,
+   "input_tokens": 763,
+   "output_tokens": 26,
+   "final_answer": "Dave is on the 'pro' plan.",
+   "timeline": [
+    {
+     "span_id": "0x37b1ee79cd712c53",
+     "tool": "fetch_user",
+     "outcome": "ok",
+     "duration_ms": 0.1,
+     "error": null,
+     "arguments": "{'username': 'dave'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x48f971c93e3f08fadc85c0a4d4a3bd17",
+   "task_id": "t029",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 4735.8,
+   "input_tokens": 768,
+   "output_tokens": 39,
+   "final_answer": "The user with ID 102 is bob, and their email is bob@example.com.",
+   "timeline": [
+    {
+     "span_id": "0x1f8d7822f2e28cc3",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'user_id': 102}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x519ca350b07be19a5ab14cb005ad92de",
+   "task_id": "t030",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 18608.2,
+   "input_tokens": 758,
+   "output_tokens": 29,
+   "final_answer": "The username for user 101 is alice.",
+   "timeline": [
+    {
+     "span_id": "0xd17c3a5d8bd0e6cd",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.16,
+     "error": null,
+     "arguments": "{'user_id': 101}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xd294bfc36545a01eb42aa247980344da",
+   "task_id": "t031",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 4,
+   "duration_ms": 13558.7,
+   "input_tokens": 2212,
+   "output_tokens": 134,
+   "final_answer": "No articles about API rate limits published after 2026-01-01 were found in the knowledge base.",
+   "timeline": [
+    {
+     "span_id": "0x1bcd22a2fa356c55",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.11,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'query': 'API rate limits'}, input_type=dict] For further informatio",
+     "arguments": "{'query': {'query': 'API rate limits'}}"
+    },
+    {
+     "span_id": "0xcb2867177e5016b5",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.07,
+     "error": "1 validation error for SearchKBArgs query.filters.category Field required [type=missing, input_value={'published_after': '2026-01-01'}, input_type=dict] For fur",
+     "arguments": "{'query': {'filters': {'published_after': '2026-01-01'}, 'terms': ['API', 'rate limits']}}"
+    },
+    {
+     "span_id": "0x0adf2339a10b96a4",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'query': {'terms': ['rate limits'], 'filters': {'category': 'API', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.self_correction_cost",
+    "loop.retry_storm"
+   ]
+  },
+  {
+   "trace_id": "0x4b224c58c129915e5daae475ef9b9e45",
+   "task_id": "t032",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": false,
+   "stop_reason": "fatal_error",
+   "iterations": 2,
+   "duration_ms": 105025.4,
+   "input_tokens": 361,
+   "output_tokens": 44,
+   "final_answer": "",
+   "timeline": [
+    {
+     "span_id": "0x10230abaa7117f0a",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.07,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'category': 'account', '...ed_after': '2026-06-01'}, input_type=dict",
+     "arguments": "{'query': {'category': 'account', 'keywords': ['two-factor authentication'], 'published_after': '2026-06-01'}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid"
+   ]
+  },
+  {
+   "trace_id": "0x3e738f33243f3c37635106bdd7c35815",
+   "task_id": "t033",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 4,
+   "duration_ms": 47147.2,
+   "input_tokens": 2188,
+   "output_tokens": 132,
+   "final_answer": "No billing articles mentioning \"invoices\" were found published after 2025-12-31.",
+   "timeline": [
+    {
+     "span_id": "0xc30664e5d86e1248",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.1,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'query': 'invoices billing'}, input_type=dict] For further informati",
+     "arguments": "{'query': {'query': 'invoices billing'}}"
+    },
+    {
+     "span_id": "0xf120d2e69215265f",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.1,
+     "error": "1 validation error for SearchKBArgs query.filters.category Field required [type=missing, input_value={'published_after': '2025-12-31'}, input_type=dict] For fur",
+     "arguments": "{'query': {'terms': ['invoices', 'billing'], 'filters': {'published_after': '2025-12-31'}}}"
+    },
+    {
+     "span_id": "0x4b1896f499e29084",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'query': {'terms': ['invoices'], 'filters': {'category': 'billing', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.self_correction_cost",
+    "loop.retry_storm",
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0x31e03258f612e4e28635750f106c6ac2",
+   "task_id": "t034",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 3,
+   "duration_ms": 13576.9,
+   "input_tokens": 1488,
+   "output_tokens": 78,
+   "final_answer": "The article ID for the webhook retry documentation in the API category is **kb-7**.",
+   "timeline": [
+    {
+     "span_id": "0x53ca09c50e700489",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.07,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'category': 'api', 'keyw...': ['webhook', 'retry']}, input_type=dict",
+     "arguments": "{'query': {'category': 'api', 'keywords': ['webhook', 'retry']}}"
+    },
+    {
+     "span_id": "0xdd2df8f690e58652",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'query': {'terms': ['webhook', 'retry'], 'filters': {'category': 'api', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.self_correction_cost"
+   ]
+  },
+  {
+   "trace_id": "0xa34e45eb2e3d423d2afdd2daefaf5f17",
+   "task_id": "t035",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 3,
+   "duration_ms": 8425.0,
+   "input_tokens": 1526,
+   "output_tokens": 89,
+   "final_answer": "No.",
+   "timeline": [
+    {
+     "span_id": "0x6bc1d68a1107e1b8",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.1,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'keywords': ['CSV export...01', 'category': 'data'}, input_type=dict",
+     "arguments": "{'query': {'keywords': ['CSV export'], 'published_after': '2026-01-01', 'category': 'data'}}"
+    },
+    {
+     "span_id": "0xae35795948b7d4fc",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.17,
+     "error": null,
+     "arguments": "{'query': {'terms': ['CSV export'], 'filters': {'category': 'data', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.self_correction_cost"
+   ]
+  },
+  {
+   "trace_id": "0x2b51b615a7ee0828f5c32682dc0f5450",
+   "task_id": "t036",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 4,
+   "duration_ms": 9771.7,
+   "input_tokens": 2121,
+   "output_tokens": 103,
+   "final_answer": "The article \"Deleting your account\" was published on 2025-09-05.",
+   "timeline": [
+    {
+     "span_id": "0x330f26738c25f32e",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.13,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'query': 'delete account GDPR'}, input_type=dict] For further inform",
+     "arguments": "{'query': {'query': 'delete account GDPR'}}"
+    },
+    {
+     "span_id": "0xdca4c21264e02fbc",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.1,
+     "error": "1 validation error for SearchKBArgs query.filters.category Field required [type=missing, input_value={}, input_type=dict] For further information visit https://",
+     "arguments": "{'query': {'terms': ['delete account', 'GDPR'], 'filters': {}}}"
+    },
+    {
+     "span_id": "0x43a5fdb519c62b14",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.1,
+     "error": null,
+     "arguments": "{'query': {'terms': ['delete account', 'GDPR'], 'filters': {'category': 'account', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.self_correction_cost",
+    "loop.retry_storm"
+   ]
+  },
+  {
+   "trace_id": "0x7274597ef22d87765c60774b1055839e",
+   "task_id": "t037",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": false,
+   "stop_reason": "max_iterations",
+   "iterations": 8,
+   "duration_ms": 85448.2,
+   "input_tokens": 4955,
+   "output_tokens": 205,
+   "final_answer": "",
+   "timeline": [
+    {
+     "span_id": "0x22471e02fe1be333",
+     "tool": "cancel_order",
+     "outcome": "unknown_tool",
+     "duration_ms": 0.11,
+     "error": "tool 'cancel_order' not in registry",
+     "arguments": "{'order_id': 'ORD-1002'}"
+    },
+    {
+     "span_id": "0xb262528fdb83c06f",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.09,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'query': 'how to cancel an order'}, input_type=dict] For further inf",
+     "arguments": "{'query': {'query': 'how to cancel an order'}}"
+    },
+    {
+     "span_id": "0x0be423df03cfa76c",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.1,
+     "error": "1 validation error for SearchKBArgs query.filters.category Field required [type=missing, input_value={}, input_type=dict] For further information visit https://",
+     "arguments": "{'query': {'terms': ['cancel order'], 'filters': {}}}"
+    },
+    {
+     "span_id": "0x5aa8a44085dc5e6a",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.23,
+     "error": null,
+     "arguments": "{'query': {'terms': ['cancel order'], 'filters': {'category': 'orders', 'after': None}}}"
+    },
+    {
+     "span_id": "0x4d12927ac0437c90",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-1002'}"
+    },
+    {
+     "span_id": "0x0f329814df6f8804",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.18,
+     "error": null,
+     "arguments": "{'query': {'terms': ['cancel order'], 'filters': {'category': 'general', 'after': None}}}"
+    },
+    {
+     "span_id": "0x72df4ea23a0cb3dd",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.13,
+     "error": null,
+     "arguments": "{'query': {'terms': ['cancel order'], 'filters': {'category': 'support', 'after': None}}}"
+    },
+    {
+     "span_id": "0x88b44853189bb409",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.11,
+     "error": null,
+     "arguments": "{'query': {'terms': ['cancel order'], 'filters': {'category': 'policy', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.no_progress",
+    "error.self_correction_cost",
+    "error.self_correction_cost",
+    "tool.unknown_name",
+    "loop.near_duplicate",
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0x23e445ac46cdbad6ac492e18ebed82a2",
+   "task_id": "t038",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": false,
+   "stop_reason": "max_iterations",
+   "iterations": 8,
+   "duration_ms": 17485.1,
+   "input_tokens": 4960,
+   "output_tokens": 218,
+   "final_answer": "",
+   "timeline": [
+    {
+     "span_id": "0xb8b143cc2b7c59db",
+     "tool": "send_email",
+     "outcome": "unknown_tool",
+     "duration_ms": 0.1,
+     "error": "tool 'send_email' not in registry",
+     "arguments": "{'body': 'Your order has shipped.', 'recipient': 'alice@example.com', 'subject': 'Order Shipped'}"
+    },
+    {
+     "span_id": "0x78755816ab190c50",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.11,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'query': 'send email'}, input_type=dict] For further information vis",
+     "arguments": "{'query': {'query': 'send email'}}"
+    },
+    {
+     "span_id": "0x2607ab9d6bdad2a5",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.07,
+     "error": "1 validation error for SearchKBArgs query.filters.category Field required [type=missing, input_value={}, input_type=dict] For further information visit https://",
+     "arguments": "{'query': {'terms': ['send email'], 'filters': {}}}"
+    },
+    {
+     "span_id": "0x502e5f1220cc7f17",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.18,
+     "error": null,
+     "arguments": "{'query': {'terms': ['send email'], 'filters': {'category': 'general', 'after': None}}}"
+    },
+    {
+     "span_id": "0x22e462b478243597",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'query': {'terms': ['email'], 'filters': {'category': 'support', 'after': None}}}"
+    },
+    {
+     "span_id": "0xef94e631bb1a020b",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.26,
+     "error": null,
+     "arguments": "{'query': {'terms': ['email'], 'filters': {'category': 'orders', 'after': None}}}"
+    },
+    {
+     "span_id": "0x85da47e7ea9aaa8f",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.13,
+     "error": null,
+     "arguments": "{'query': {'terms': ['email'], 'filters': {'category': 'user_management', 'after': None}}}"
+    },
+    {
+     "span_id": "0x7d58ee2b69dd4ff6",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.17,
+     "error": null,
+     "arguments": "{'query': {'terms': ['tools'], 'filters': {'category': 'general', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.no_progress",
+    "error.self_correction_cost",
+    "error.self_correction_cost",
+    "tool.unknown_name"
+   ]
+  },
+  {
+   "trace_id": "0x802c73bd02d4c0f07aa35ab9dbca189f",
+   "task_id": "t039",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": false,
+   "stop_reason": "answered",
+   "iterations": 4,
+   "duration_ms": 96985.8,
+   "input_tokens": 2057,
+   "output_tokens": 93,
+   "final_answer": "I'm sorry, I couldn't find the current weather information for Berlin in our knowledge base.",
+   "timeline": [
+    {
+     "span_id": "0x2077cd0c21e15720",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.07,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'query': 'current weather in Berlin'}, input_type=dict] For further ",
+     "arguments": "{'query': {'query': 'current weather in Berlin'}}"
+    },
+    {
+     "span_id": "0x33dc1725282983fb",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.08,
+     "error": "1 validation error for SearchKBArgs query.filters.category Field required [type=missing, input_value={}, input_type=dict] For further information visit https://",
+     "arguments": "{'query': {'terms': ['weather in Berlin'], 'filters': {}}}"
+    },
+    {
+     "span_id": "0x90fee195a7220c8f",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.13,
+     "error": null,
+     "arguments": "{'query': {'terms': ['Berlin'], 'filters': {'category': 'weather', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.self_correction_cost",
+    "loop.retry_storm",
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0x64c21f3e9d79ee29c0da1d090bf23e0f",
+   "task_id": "t040",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": false,
+   "stop_reason": "max_iterations",
+   "iterations": 8,
+   "duration_ms": 13910.7,
+   "input_tokens": 4923,
+   "output_tokens": 220,
+   "final_answer": "",
+   "timeline": [
+    {
+     "span_id": "0x0448cebc62e7e95b",
+     "tool": "update_user",
+     "outcome": "unknown_tool",
+     "duration_ms": 0.07,
+     "error": "tool 'update_user' not in registry",
+     "arguments": "{'plan': 'enterprise', 'user_id': 104}"
+    },
+    {
+     "span_id": "0xd265d33bd466179b",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.11,
+     "error": null,
+     "arguments": "{'user_id': 104}"
+    },
+    {
+     "span_id": "0xa9023999a356af1a",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.06,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'query': 'update user plan'}, input_type=dict] For further informati",
+     "arguments": "{'query': {'query': 'update user plan'}}"
+    },
+    {
+     "span_id": "0x2cab2ddda882a513",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.1,
+     "error": "1 validation error for SearchKBArgs query.filters.category Field required [type=missing, input_value={}, input_type=dict] For further information visit https://",
+     "arguments": "{'query': {'filters': {}, 'terms': ['update', 'user', 'plan']}}"
+    },
+    {
+     "span_id": "0xd7987bd61e6a81fd",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.28,
+     "error": null,
+     "arguments": "{'query': {'terms': ['update', 'user', 'plan'], 'filters': {'category': 'account', 'after': None}}}"
+    },
+    {
+     "span_id": "0xe7c597dd0694bc6b",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.19,
+     "error": null,
+     "arguments": "{'query': {'terms': ['update', 'plan'], 'filters': {'category': 'general', 'after': None}}}"
+    },
+    {
+     "span_id": "0x28751e385653f4e4",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.17,
+     "error": null,
+     "arguments": "{'query': {'terms': ['update', 'plan'], 'filters': {'category': 'billing', 'after': None}}}"
+    },
+    {
+     "span_id": "0xbb962238a653d5b8",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.11,
+     "error": null,
+     "arguments": "{'query': {'terms': ['change', 'plan'], 'filters': {'category': 'account', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.no_progress",
+    "error.self_correction_cost",
+    "error.self_correction_cost",
+    "tool.unknown_name"
+   ]
+  },
+  {
+   "trace_id": "0x72375c332b22a98c6fe849760012b88a",
+   "task_id": "t041",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": false,
+   "stop_reason": "max_iterations",
+   "iterations": 8,
+   "duration_ms": 169471.3,
+   "input_tokens": 5350,
+   "output_tokens": 216,
+   "final_answer": "",
+   "timeline": [
+    {
+     "span_id": "0xe0acd9466b1851e5",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.04,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'query': 'pro plan users'}, input_type=dict] For further information",
+     "arguments": "{'query': {'query': 'pro plan users'}}"
+    },
+    {
+     "span_id": "0x4dce54f5c19081a4",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.1,
+     "error": "2 validation errors for SearchKBArgs query.terms Input should be a valid list [type=list_type, input_value='users', input_type=str] For further information visi",
+     "arguments": "{'query': {'terms': 'users', 'filters': {'plan': 'pro'}}}"
+    },
+    {
+     "span_id": "0x8ceee097ef05d39f",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.15,
+     "error": null,
+     "arguments": "{'query': {'terms': ['users'], 'filters': {'category': 'users', 'after': None}}}"
+    },
+    {
+     "span_id": "0x9c884426eb81c581",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.16,
+     "error": null,
+     "arguments": "{'query': {'terms': ['pro plan'], 'filters': {'category': 'users', 'after': None}}}"
+    },
+    {
+     "span_id": "0xb54da31a5238245e",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.11,
+     "error": null,
+     "arguments": "{'query': {'terms': ['pro'], 'filters': {'category': 'users', 'after': None}}}"
+    },
+    {
+     "span_id": "0xbb225a2c08759e36",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'query': {'terms': ['plan'], 'filters': {'category': 'users', 'after': None}}}"
+    },
+    {
+     "span_id": "0xea60c76f5566679f",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.2,
+     "error": null,
+     "arguments": "{'query': {'terms': ['list'], 'filters': {'category': 'users', 'after': None}}}"
+    },
+    {
+     "span_id": "0x41cacebcd3498152",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.15,
+     "error": null,
+     "arguments": "{'query': {'terms': ['all users'], 'filters': {'category': 'users', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "args.type_confusion",
+    "error.no_progress",
+    "error.self_correction_cost",
+    "loop.near_duplicate",
+    "perf.latency_outlier",
+    "perf.latency_outlier",
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0xdcb33419fa70883f55715f4edd958a6f",
+   "task_id": "t042",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": false,
+   "stop_reason": "max_iterations",
+   "iterations": 8,
+   "duration_ms": 14801.4,
+   "input_tokens": 5184,
+   "output_tokens": 193,
+   "final_answer": "",
+   "timeline": [
+    {
+     "span_id": "0x396a32a7ec71c620",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.16,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-7788'}"
+    },
+    {
+     "span_id": "0xb79783ceb673198f",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.09,
+     "error": "2 validation errors for SearchKBArgs query.terms Field required [type=missing, input_value={'query': 'refund policy'}, input_type=dict] For further information ",
+     "arguments": "{'query': {'query': 'refund policy'}}"
+    },
+    {
+     "span_id": "0xa583f6a791763126",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.11,
+     "error": "1 validation error for SearchKBArgs query.filters Field required [type=missing, input_value={'terms': ['refund']}, input_type=dict] For further information visi",
+     "arguments": "{'query': {'terms': ['refund']}}"
+    },
+    {
+     "span_id": "0xd7f144236340d490",
+     "tool": "search_kb",
+     "outcome": "invalid_arguments",
+     "duration_ms": 0.14,
+     "error": "1 validation error for SearchKBArgs query.filters.category Field required [type=missing, input_value={}, input_type=dict] For further information visit https://",
+     "arguments": "{'query': {'filters': {}, 'terms': ['refund']}}"
+    },
+    {
+     "span_id": "0x105005649845f695",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.2,
+     "error": null,
+     "arguments": "{'query': {'terms': ['refund'], 'filters': {'category': 'policy', 'after': None}}}"
+    },
+    {
+     "span_id": "0xcd5777de20a7ac3a",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.12,
+     "error": null,
+     "arguments": "{'query': {'terms': ['refund'], 'filters': {'category': 'orders', 'after': None}}}"
+    },
+    {
+     "span_id": "0x16c19ce89549060d",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.08,
+     "error": null,
+     "arguments": "{'query': {'terms': ['refund'], 'filters': {'category': 'general', 'after': None}}}"
+    },
+    {
+     "span_id": "0x1207e3cdd655fa70",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.15,
+     "error": null,
+     "arguments": "{'query': {'terms': ['refund'], 'filters': {'category': 'returns', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "args.schema_invalid",
+    "error.no_progress",
+    "error.self_correction_cost",
+    "loop.near_duplicate"
+   ]
+  },
+  {
+   "trace_id": "0x4ae67870456b1e5879dd0567e13faefd",
+   "task_id": "t043",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": false,
+   "stop_reason": "fatal_error",
+   "iterations": 2,
+   "duration_ms": 204233.0,
+   "input_tokens": 349,
+   "output_tokens": 18,
+   "final_answer": "",
+   "timeline": [
+    {
+     "span_id": "0xf5c3511864cb2dbf",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.12,
+     "error": null,
+     "arguments": "{'user_id': 101}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x01a578d2d985a955ddd0d6ae1dbd37f9",
+   "task_id": "t044",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": false,
+   "stop_reason": "fatal_error",
+   "iterations": 1,
+   "duration_ms": 1277434.5,
+   "input_tokens": 0,
+   "output_tokens": 0,
+   "final_answer": "",
+   "timeline": [],
+   "finding_ids": []
+  }
+ ],
+ "findings": [
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "",
+   "task_id": "*",
+   "span_ids": [
+    "0x570ed628a053240d",
+    "0x21644a7564f963c2",
+    "0xb9abb04da20105a1",
+    "0x1bcd22a2fa356c55",
+    "0xcb2867177e5016b5",
+    "0x10230abaa7117f0a",
+    "0xc30664e5d86e1248",
+    "0xf120d2e69215265f",
+    "0x53ca09c50e700489",
+    "0x6bc1d68a1107e1b8",
+    "0x330f26738c25f32e",
+    "0xdca4c21264e02fbc",
+    "0xb262528fdb83c06f",
+    "0x0be423df03cfa76c",
+    "0x78755816ab190c50",
+    "0x2607ab9d6bdad2a5",
+    "0x2077cd0c21e15720",
+    "0x33dc1725282983fb",
+    "0xa9023999a356af1a",
+    "0x2cab2ddda882a513",
+    "0xe0acd9466b1851e5",
+    "0x4dce54f5c19081a4",
+    "0xb79783ceb673198f",
+    "0xa583f6a791763126",
+    "0xd7f144236340d490"
+   ],
+   "title": "search_kb accounts for 100% of all invalid-argument events \u2014 the tool description is the bug",
+   "detail": "25 of 25 schema rejections across the run hit search_kb, in 14 tasks. The model keeps guessing the same wrong shapes (missing: {'query.terms': 15, 'query.filters': 15, 'query.filters.category': 10}). When one tool dominates, the fix is its docstring/schema, not the model.",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 25,
+    "total": 25,
+    "share": 1.0,
+    "fields": {
+     "query.terms": 15,
+     "query.filters": 15,
+     "query.filters.category": 10
+    },
+    "tasks": [
+     "t012",
+     "t013",
+     "t031",
+     "t032",
+     "t033",
+     "t034",
+     "t035",
+     "t036",
+     "t037",
+     "t038",
+     "t039",
+     "t040",
+     "t041",
+     "t042"
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "run"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0xb77efafb12f3ccfae22bc41df67ecd87",
+   "task_id": "t003",
+   "span_ids": [
+    "0x5f3c9d42f8614603"
+   ],
+   "title": "calculate took 3ms (12.7\u00d7 its median)",
+   "detail": "baseline median 0.2ms, MAD 0.0ms over n=8",
+   "evidence": {
+    "duration_ms": 2.605056,
+    "median_ms": 0.204928,
+    "mad_ms": 0.020991999999999997,
+    "n": 8,
+    "ratio": 12.71,
+    "transport_retries": 0
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/calc.py",
+    "function": "calculate",
+    "line": 35
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0x09c395251da6b2d399a903944bfe8845",
+   "task_id": "t015",
+   "span_ids": [
+    "0x3ee3aa9c67fd1241"
+   ],
+   "title": "chat gemini-3.1-flash-lite took 57856ms (25.5\u00d7 its median)",
+   "detail": "baseline median 2269.8ms, MAD 784.8ms over n=132; 1 transport retries inside the span",
+   "evidence": {
+    "duration_ms": 57855.643904,
+    "median_ms": 2269.81568,
+    "mad_ms": 784.7941119999999,
+    "n": 132,
+    "ratio": 25.49,
+    "transport_retries": 1
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0xbb50ab55ee011764064f08134e6753e4",
+   "task_id": "t026",
+   "span_ids": [
+    "0xb590a4c444ae8848"
+   ],
+   "title": "chat gemini-3.1-flash-lite took 77793ms (34.3\u00d7 its median)",
+   "detail": "baseline median 2269.8ms, MAD 784.8ms over n=132; 1 transport retries inside the span",
+   "evidence": {
+    "duration_ms": 77793.200128,
+    "median_ms": 2269.81568,
+    "mad_ms": 784.7941119999999,
+    "n": 132,
+    "ratio": 34.27,
+    "transport_retries": 1
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0x3e738f33243f3c37635106bdd7c35815",
+   "task_id": "t033",
+   "span_ids": [
+    "0x941f09c6d5bef510"
+   ],
+   "title": "chat gemini-3.1-flash-lite took 26726ms (11.8\u00d7 its median)",
+   "detail": "baseline median 2269.8ms, MAD 784.8ms over n=132",
+   "evidence": {
+    "duration_ms": 26726.287872,
+    "median_ms": 2269.81568,
+    "mad_ms": 784.7941119999999,
+    "n": 132,
+    "ratio": 11.77,
+    "transport_retries": 0
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "tool.unknown_name",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0x7274597ef22d87765c60774b1055839e",
+   "task_id": "t037",
+   "span_ids": [
+    "0x22471e02fe1be333"
+   ],
+   "title": "called non-existent tool cancel_order \u2014 still advertised in the system prompt",
+   "detail": "'cancel_order' is not registered (registry: ['get_user', 'fetch_user', 'fetch_order_status', 'search_kb', 'calculate']); nearest is 'calculate' at distance 7. The system prompt lists it, so this is prompt drift, not model invention.",
+   "evidence": {
+    "tool": "cancel_order",
+    "nearest_registered": "calculate",
+    "distance": 7,
+    "advertised_in_system_prompt": true,
+    "arguments": {
+     "order_id": "ORD-1002"
+    }
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0x7274597ef22d87765c60774b1055839e",
+   "task_id": "t037",
+   "span_ids": [
+    "0x7603bf7323f75f6d"
+   ],
+   "title": "chat gemini-3.1-flash-lite took 72055ms (31.7\u00d7 its median)",
+   "detail": "baseline median 2269.8ms, MAD 784.8ms over n=132; 2 transport retries inside the span",
+   "evidence": {
+    "duration_ms": 72055.31008,
+    "median_ms": 2269.81568,
+    "mad_ms": 784.7941119999999,
+    "n": 132,
+    "ratio": 31.75,
+    "transport_retries": 2
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "tool.unknown_name",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0x23e445ac46cdbad6ac492e18ebed82a2",
+   "task_id": "t038",
+   "span_ids": [
+    "0xb8b143cc2b7c59db"
+   ],
+   "title": "called non-existent tool send_email \u2014 still advertised in the system prompt",
+   "detail": "'send_email' is not registered (registry: ['get_user', 'fetch_user', 'fetch_order_status', 'search_kb', 'calculate']); nearest is 'get_user' at distance 8. The system prompt lists it, so this is prompt drift, not model invention.",
+   "evidence": {
+    "tool": "send_email",
+    "nearest_registered": "get_user",
+    "distance": 8,
+    "advertised_in_system_prompt": true,
+    "arguments": {
+     "body": "Your order has shipped.",
+     "recipient": "alice@example.com",
+     "subject": "Order Shipped"
+    }
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0x802c73bd02d4c0f07aa35ab9dbca189f",
+   "task_id": "t039",
+   "span_ids": [
+    "0x690d78706b3ce6c4"
+   ],
+   "title": "chat gemini-3.1-flash-lite took 83969ms (37.0\u00d7 its median)",
+   "detail": "baseline median 2269.8ms, MAD 784.8ms over n=132; 2 transport retries inside the span",
+   "evidence": {
+    "duration_ms": 83968.95104,
+    "median_ms": 2269.81568,
+    "mad_ms": 784.7941119999999,
+    "n": 132,
+    "ratio": 36.99,
+    "transport_retries": 2
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "tool.unknown_name",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0x64c21f3e9d79ee29c0da1d090bf23e0f",
+   "task_id": "t040",
+   "span_ids": [
+    "0x0448cebc62e7e95b"
+   ],
+   "title": "called non-existent tool update_user \u2014 still advertised in the system prompt",
+   "detail": "'update_user' is not registered (registry: ['get_user', 'fetch_user', 'fetch_order_status', 'search_kb', 'calculate']); nearest is 'get_user' at distance 5. The system prompt lists it, so this is prompt drift, not model invention.",
+   "evidence": {
+    "tool": "update_user",
+    "nearest_registered": "get_user",
+    "distance": 5,
+    "advertised_in_system_prompt": true,
+    "arguments": {
+     "plan": "enterprise",
+     "user_id": 104
+    }
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0x72375c332b22a98c6fe849760012b88a",
+   "task_id": "t041",
+   "span_ids": [
+    "0x5a85cdde6e3c2bca"
+   ],
+   "title": "chat gemini-3.1-flash-lite took 93793ms (41.3\u00d7 its median)",
+   "detail": "baseline median 2269.8ms, MAD 784.8ms over n=132; 2 transport retries inside the span",
+   "evidence": {
+    "duration_ms": 93793.245952,
+    "median_ms": 2269.81568,
+    "mad_ms": 784.7941119999999,
+    "n": 132,
+    "ratio": 41.32,
+    "transport_retries": 2
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0x72375c332b22a98c6fe849760012b88a",
+   "task_id": "t041",
+   "span_ids": [
+    "0x0db62daac2f6c2ec"
+   ],
+   "title": "chat gemini-3.1-flash-lite took 47527ms (20.9\u00d7 its median)",
+   "detail": "baseline median 2269.8ms, MAD 784.8ms over n=132; 1 transport retries inside the span",
+   "evidence": {
+    "duration_ms": 47526.542848,
+    "median_ms": 2269.81568,
+    "mad_ms": 784.7941119999999,
+    "n": 132,
+    "ratio": 20.94,
+    "transport_retries": 1
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0xdcb33419fa70883f55715f4edd958a6f",
+   "task_id": "t042",
+   "span_ids": [
+    "0xb79783ceb673198f",
+    "0xa583f6a791763126",
+    "0xd7f144236340d490"
+   ],
+   "title": "search_kb rejected 3\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 2, 'query.filters.category': 1}. Arguments tried: {'query': {'query': 'refund policy'}}; {'query': {'terms': ['refund']}}; {'query': {'filters': {}, 'terms': ['refund']}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 3,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 2,
+     "query.filters.category": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ],
+     [
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ],
+     [
+      {
+       "field": "query.filters.category",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "loop.near_duplicate",
+   "severity": "high",
+   "confidence": 0.9,
+   "trace_id": "0x72375c332b22a98c6fe849760012b88a",
+   "task_id": "t041",
+   "span_ids": [
+    "0x8ceee097ef05d39f",
+    "0x9c884426eb81c581",
+    "0xb54da31a5238245e",
+    "0xbb225a2c08759e36",
+    "0xea60c76f5566679f",
+    "0x41cacebcd3498152"
+   ],
+   "title": "search_kb called 6\u00d7 varying only query.terms[0] \u2014 every call came back empty or failed",
+   "detail": "Consecutive calls differ in \u22641 argument; values tried: query.terms[0]=['users', 'pro plan', 'pro', 'plan', 'list', 'all users']. 6 empty results, 0 errors.",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 6,
+    "varying_paths": [
+     "query.terms[0]"
+    ],
+    "values_tried": {
+     "query.terms[0]": [
+      "users",
+      "pro plan",
+      "pro",
+      "plan",
+      "list",
+      "all users"
+     ]
+    },
+    "empty_results": 6,
+    "errors": 0,
+    "fruitless": true
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "loop.near_duplicate",
+   "severity": "high",
+   "confidence": 0.7,
+   "trace_id": "0x7274597ef22d87765c60774b1055839e",
+   "task_id": "t037",
+   "span_ids": [
+    "0x5aa8a44085dc5e6a",
+    "0x0f329814df6f8804",
+    "0x72df4ea23a0cb3dd",
+    "0x88b44853189bb409"
+   ],
+   "title": "search_kb called 4\u00d7 varying only query.filters.category \u2014 every call came back empty or failed",
+   "detail": "Consecutive calls differ in \u22641 argument; values tried: query.filters.category=['orders', 'general', 'support', 'policy']. 4 empty results, 0 errors.",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 4,
+    "varying_paths": [
+     "query.filters.category"
+    ],
+    "values_tried": {
+     "query.filters.category": [
+      "orders",
+      "general",
+      "support",
+      "policy"
+     ]
+    },
+    "empty_results": 4,
+    "errors": 0,
+    "fruitless": true
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "loop.near_duplicate",
+   "severity": "high",
+   "confidence": 0.7,
+   "trace_id": "0xdcb33419fa70883f55715f4edd958a6f",
+   "task_id": "t042",
+   "span_ids": [
+    "0x105005649845f695",
+    "0xcd5777de20a7ac3a",
+    "0x16c19ce89549060d",
+    "0x1207e3cdd655fa70"
+   ],
+   "title": "search_kb called 4\u00d7 varying only query.filters.category \u2014 every call came back empty or failed",
+   "detail": "Consecutive calls differ in \u22641 argument; values tried: query.filters.category=['policy', 'orders', 'general', 'returns']. 4 empty results, 0 errors.",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 4,
+    "varying_paths": [
+     "query.filters.category"
+    ],
+    "values_tried": {
+     "query.filters.category": [
+      "policy",
+      "orders",
+      "general",
+      "returns"
+     ]
+    },
+    "empty_results": 4,
+    "errors": 0,
+    "fruitless": true
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0x95dff8ca66a74797babae7fafbd2678e",
+   "task_id": "t012",
+   "span_ids": [
+    "0x570ed628a053240d"
+   ],
+   "title": "search_kb rejected 1\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1}. Arguments tried: {'query': {'category': 'account', 'keywords': ['reset password']}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 1,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0x561d81ce8f17e180ff3afb47f6be8d5b",
+   "task_id": "t013",
+   "span_ids": [
+    "0x21644a7564f963c2",
+    "0xb9abb04da20105a1"
+   ],
+   "title": "search_kb rejected 2\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1, 'query.filters.category': 1}. Arguments tried: {'query': {'query': 'refunds billing'}}; {'query': {'filters': {}, 'terms': ['refunds', 'billing']}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 2,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1,
+     "query.filters.category": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ],
+     [
+      {
+       "field": "query.filters.category",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0xd294bfc36545a01eb42aa247980344da",
+   "task_id": "t031",
+   "span_ids": [
+    "0x1bcd22a2fa356c55",
+    "0xcb2867177e5016b5"
+   ],
+   "title": "search_kb rejected 2\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1, 'query.filters.category': 1}. Arguments tried: {'query': {'query': 'API rate limits'}}; {'query': {'filters': {'published_after': '2026-01-01'}, 'terms': ['API', 'rate limits']}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 2,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1,
+     "query.filters.category": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ],
+     [
+      {
+       "field": "query.filters.category",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0x4b224c58c129915e5daae475ef9b9e45",
+   "task_id": "t032",
+   "span_ids": [
+    "0x10230abaa7117f0a"
+   ],
+   "title": "search_kb rejected 1\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1}. Arguments tried: {'query': {'category': 'account', 'keywords': ['two-factor authentication'], 'published_after': '2026-06-01'}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 1,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0x3e738f33243f3c37635106bdd7c35815",
+   "task_id": "t033",
+   "span_ids": [
+    "0xc30664e5d86e1248",
+    "0xf120d2e69215265f"
+   ],
+   "title": "search_kb rejected 2\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1, 'query.filters.category': 1}. Arguments tried: {'query': {'query': 'invoices billing'}}; {'query': {'terms': ['invoices', 'billing'], 'filters': {'published_after': '2025-12-31'}}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 2,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1,
+     "query.filters.category": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ],
+     [
+      {
+       "field": "query.filters.category",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0x31e03258f612e4e28635750f106c6ac2",
+   "task_id": "t034",
+   "span_ids": [
+    "0x53ca09c50e700489"
+   ],
+   "title": "search_kb rejected 1\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1}. Arguments tried: {'query': {'category': 'api', 'keywords': ['webhook', 'retry']}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 1,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0xa34e45eb2e3d423d2afdd2daefaf5f17",
+   "task_id": "t035",
+   "span_ids": [
+    "0x6bc1d68a1107e1b8"
+   ],
+   "title": "search_kb rejected 1\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1}. Arguments tried: {'query': {'keywords': ['CSV export'], 'published_after': '2026-01-01', 'category': 'data'}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 1,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0x2b51b615a7ee0828f5c32682dc0f5450",
+   "task_id": "t036",
+   "span_ids": [
+    "0x330f26738c25f32e",
+    "0xdca4c21264e02fbc"
+   ],
+   "title": "search_kb rejected 2\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1, 'query.filters.category': 1}. Arguments tried: {'query': {'query': 'delete account GDPR'}}; {'query': {'terms': ['delete account', 'GDPR'], 'filters': {}}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 2,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1,
+     "query.filters.category": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ],
+     [
+      {
+       "field": "query.filters.category",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0x7274597ef22d87765c60774b1055839e",
+   "task_id": "t037",
+   "span_ids": [
+    "0xb262528fdb83c06f",
+    "0x0be423df03cfa76c"
+   ],
+   "title": "search_kb rejected 2\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1, 'query.filters.category': 1}. Arguments tried: {'query': {'query': 'how to cancel an order'}}; {'query': {'terms': ['cancel order'], 'filters': {}}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 2,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1,
+     "query.filters.category": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ],
+     [
+      {
+       "field": "query.filters.category",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0x23e445ac46cdbad6ac492e18ebed82a2",
+   "task_id": "t038",
+   "span_ids": [
+    "0x78755816ab190c50",
+    "0x2607ab9d6bdad2a5"
+   ],
+   "title": "search_kb rejected 2\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1, 'query.filters.category': 1}. Arguments tried: {'query': {'query': 'send email'}}; {'query': {'terms': ['send email'], 'filters': {}}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 2,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1,
+     "query.filters.category": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ],
+     [
+      {
+       "field": "query.filters.category",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0x802c73bd02d4c0f07aa35ab9dbca189f",
+   "task_id": "t039",
+   "span_ids": [
+    "0x2077cd0c21e15720",
+    "0x33dc1725282983fb"
+   ],
+   "title": "search_kb rejected 2\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1, 'query.filters.category': 1}. Arguments tried: {'query': {'query': 'current weather in Berlin'}}; {'query': {'terms': ['weather in Berlin'], 'filters': {}}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 2,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1,
+     "query.filters.category": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ],
+     [
+      {
+       "field": "query.filters.category",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0x64c21f3e9d79ee29c0da1d090bf23e0f",
+   "task_id": "t040",
+   "span_ids": [
+    "0xa9023999a356af1a",
+    "0x2cab2ddda882a513"
+   ],
+   "title": "search_kb rejected 2\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 1, 'query.filters': 1, 'query.filters.category': 1}. Arguments tried: {'query': {'query': 'update user plan'}}; {'query': {'filters': {}, 'terms': ['update', 'user', 'plan']}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 2,
+    "fields": {
+     "query.terms": 1,
+     "query.filters": 1,
+     "query.filters.category": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ],
+     [
+      {
+       "field": "query.filters.category",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.schema_invalid",
+   "severity": "medium",
+   "confidence": 1.0,
+   "trace_id": "0x72375c332b22a98c6fe849760012b88a",
+   "task_id": "t041",
+   "span_ids": [
+    "0xe0acd9466b1851e5",
+    "0x4dce54f5c19081a4"
+   ],
+   "title": "search_kb rejected 2\u00d7 by schema validation",
+   "detail": "Failing fields: {'query.terms': 2, 'query.filters': 1, 'query.filters.category': 1}. Arguments tried: {'query': {'query': 'pro plan users'}}; {'query': {'terms': 'users', 'filters': {'plan': 'pro'}}}",
+   "evidence": {
+    "tool": "search_kb",
+    "count": 2,
+    "fields": {
+     "query.terms": 2,
+     "query.filters": 1,
+     "query.filters.category": 1
+    },
+    "errors": [
+     [
+      {
+       "field": "query.terms",
+       "message": "Field required",
+       "type": "missing"
+      },
+      {
+       "field": "query.filters",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ],
+     [
+      {
+       "field": "query.terms",
+       "message": "Input should be a valid list",
+       "type": "list_type"
+      },
+      {
+       "field": "query.filters.category",
+       "message": "Field required",
+       "type": "missing"
+      }
+     ]
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.no_progress",
+   "severity": "medium",
+   "confidence": 0.95,
+   "trace_id": "0x7274597ef22d87765c60774b1055839e",
+   "task_id": "t037",
+   "span_ids": [
+    "0x39b13f32dde8560f",
+    "0x22471e02fe1be333",
+    "0xb262528fdb83c06f",
+    "0x0be423df03cfa76c",
+    "0x5aa8a44085dc5e6a",
+    "0x4d12927ac0437c90",
+    "0x0f329814df6f8804",
+    "0x72df4ea23a0cb3dd",
+    "0x88b44853189bb409"
+   ],
+   "title": "exhausted 8 iterations: 8 distinct call(s) in 8 attempts \u2014 exploring",
+   "detail": "stop_reason=max_iterations; 5 successful tool calls; distinct/total = 1.00; 4955 input tokens burned.",
+   "evidence": {
+    "iterations": 8,
+    "calls": 8,
+    "distinct_fingerprints": 8,
+    "distinct_ratio": 1.0,
+    "distinct_tools": [
+     "cancel_order",
+     "fetch_order_status",
+     "search_kb"
+    ],
+    "successful_calls": 5,
+    "input_tokens": 4955
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.no_progress",
+   "severity": "medium",
+   "confidence": 0.95,
+   "trace_id": "0x23e445ac46cdbad6ac492e18ebed82a2",
+   "task_id": "t038",
+   "span_ids": [
+    "0x1443e4766fc7183f",
+    "0xb8b143cc2b7c59db",
+    "0x78755816ab190c50",
+    "0x2607ab9d6bdad2a5",
+    "0x502e5f1220cc7f17",
+    "0x22e462b478243597",
+    "0xef94e631bb1a020b",
+    "0x85da47e7ea9aaa8f",
+    "0x7d58ee2b69dd4ff6"
+   ],
+   "title": "exhausted 8 iterations: 8 distinct call(s) in 8 attempts \u2014 exploring",
+   "detail": "stop_reason=max_iterations; 5 successful tool calls; distinct/total = 1.00; 4960 input tokens burned.",
+   "evidence": {
+    "iterations": 8,
+    "calls": 8,
+    "distinct_fingerprints": 8,
+    "distinct_ratio": 1.0,
+    "distinct_tools": [
+     "search_kb",
+     "send_email"
+    ],
+    "successful_calls": 5,
+    "input_tokens": 4960
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.no_progress",
+   "severity": "medium",
+   "confidence": 0.95,
+   "trace_id": "0x64c21f3e9d79ee29c0da1d090bf23e0f",
+   "task_id": "t040",
+   "span_ids": [
+    "0xa8f98474c1f8143f",
+    "0x0448cebc62e7e95b",
+    "0xd265d33bd466179b",
+    "0xa9023999a356af1a",
+    "0x2cab2ddda882a513",
+    "0xd7987bd61e6a81fd",
+    "0xe7c597dd0694bc6b",
+    "0x28751e385653f4e4",
+    "0xbb962238a653d5b8"
+   ],
+   "title": "exhausted 8 iterations: 8 distinct call(s) in 8 attempts \u2014 exploring",
+   "detail": "stop_reason=max_iterations; 5 successful tool calls; distinct/total = 1.00; 4923 input tokens burned.",
+   "evidence": {
+    "iterations": 8,
+    "calls": 8,
+    "distinct_fingerprints": 8,
+    "distinct_ratio": 1.0,
+    "distinct_tools": [
+     "get_user",
+     "search_kb",
+     "update_user"
+    ],
+    "successful_calls": 5,
+    "input_tokens": 4923
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/users.py",
+    "function": "get_user",
+    "line": 29
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "args.type_confusion",
+   "severity": "medium",
+   "confidence": 0.95,
+   "trace_id": "0x72375c332b22a98c6fe849760012b88a",
+   "task_id": "t041",
+   "span_ids": [
+    "0x4dce54f5c19081a4"
+   ],
+   "title": "search_kb called with wrong-typed argument (query.terms)",
+   "detail": "query.terms: Input should be a valid list. Arguments: {'query': {'terms': 'users', 'filters': {'plan': 'pro'}}}",
+   "evidence": {
+    "tool": "search_kb",
+    "errors": [
+     {
+      "field": "query.terms",
+      "message": "Input should be a valid list",
+      "type": "list_type"
+     }
+    ],
+    "arguments": {
+     "query": {
+      "terms": "users",
+      "filters": {
+       "plan": "pro"
+      }
+     }
+    }
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36,
+    "inferred_from_tool": true
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.no_progress",
+   "severity": "medium",
+   "confidence": 0.95,
+   "trace_id": "0x72375c332b22a98c6fe849760012b88a",
+   "task_id": "t041",
+   "span_ids": [
+    "0x8e3302de24368706",
+    "0xe0acd9466b1851e5",
+    "0x4dce54f5c19081a4",
+    "0x8ceee097ef05d39f",
+    "0x9c884426eb81c581",
+    "0xb54da31a5238245e",
+    "0xbb225a2c08759e36",
+    "0xea60c76f5566679f",
+    "0x41cacebcd3498152"
+   ],
+   "title": "exhausted 8 iterations: 8 distinct call(s) in 8 attempts \u2014 exploring",
+   "detail": "stop_reason=max_iterations; 6 successful tool calls; distinct/total = 1.00; 5350 input tokens burned.",
+   "evidence": {
+    "iterations": 8,
+    "calls": 8,
+    "distinct_fingerprints": 8,
+    "distinct_ratio": 1.0,
+    "distinct_tools": [
+     "search_kb"
+    ],
+    "successful_calls": 6,
+    "input_tokens": 5350
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.no_progress",
+   "severity": "medium",
+   "confidence": 0.95,
+   "trace_id": "0xdcb33419fa70883f55715f4edd958a6f",
+   "task_id": "t042",
+   "span_ids": [
+    "0x4aa073f76b82243b",
+    "0x396a32a7ec71c620",
+    "0xb79783ceb673198f",
+    "0xa583f6a791763126",
+    "0xd7f144236340d490",
+    "0x105005649845f695",
+    "0xcd5777de20a7ac3a",
+    "0x16c19ce89549060d",
+    "0x1207e3cdd655fa70"
+   ],
+   "title": "exhausted 8 iterations: 8 distinct call(s) in 8 attempts \u2014 exploring",
+   "detail": "stop_reason=max_iterations; 5 successful tool calls; distinct/total = 1.00; 5184 input tokens burned.",
+   "evidence": {
+    "iterations": 8,
+    "calls": 8,
+    "distinct_fingerprints": 8,
+    "distinct_ratio": 1.0,
+    "distinct_tools": [
+     "fetch_order_status",
+     "search_kb"
+    ],
+    "successful_calls": 5,
+    "input_tokens": 5184
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/flaky.py",
+    "function": "fetch_order_status",
+    "line": 44
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "medium",
+   "confidence": 0.837,
+   "trace_id": "0x7fbb60038a6ab8afb9488dada24cc6e0",
+   "task_id": "t021",
+   "span_ids": [
+    "0x2b108e351c231485"
+   ],
+   "title": "fetch_order_status took 1ms (6.7\u00d7 its median)",
+   "detail": "baseline median 0.1ms, MAD 0.0ms over n=11",
+   "evidence": {
+    "duration_ms": 1.004032,
+    "median_ms": 0.148992,
+    "mad_ms": 0.025088,
+    "n": 11,
+    "ratio": 6.74,
+    "transport_retries": 0
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/flaky.py",
+    "function": "fetch_order_status",
+    "line": 44
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "medium",
+   "confidence": 0.829,
+   "trace_id": "0x72375c332b22a98c6fe849760012b88a",
+   "task_id": "t041",
+   "span_ids": [
+    "0x4957025eaa1deadd"
+   ],
+   "title": "chat gemini-3.1-flash-lite took 14941ms (6.6\u00d7 its median)",
+   "detail": "baseline median 2269.8ms, MAD 784.8ms over n=132",
+   "evidence": {
+    "duration_ms": 14941.340928,
+    "median_ms": 2269.81568,
+    "mad_ms": 784.7941119999999,
+    "n": 132,
+    "ratio": 6.58,
+    "transport_retries": 0
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "medium",
+   "confidence": 0.766,
+   "trace_id": "0x64fd175b899056f9441e734525b00a87",
+   "task_id": "t027",
+   "span_ids": [
+    "0x0b7ce5f96efbd11f"
+   ],
+   "title": "chat gemini-3.1-flash-lite took 12059ms (5.3\u00d7 its median)",
+   "detail": "baseline median 2269.8ms, MAD 784.8ms over n=132",
+   "evidence": {
+    "duration_ms": 12058.757888,
+    "median_ms": 2269.81568,
+    "mad_ms": 784.7941119999999,
+    "n": 132,
+    "ratio": 5.31,
+    "transport_retries": 0
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "loop.retry_storm",
+   "severity": "medium",
+   "confidence": 0.7,
+   "trace_id": "0xd294bfc36545a01eb42aa247980344da",
+   "task_id": "t031",
+   "span_ids": [
+    "0x1bcd22a2fa356c55",
+    "0xcb2867177e5016b5",
+    "0x0adf2339a10b96a4"
+   ],
+   "title": "search_kb retried 2\u00d7 after failures, eventually succeeded",
+   "detail": "3 calls to search_kb; first 2 failed (invalid_arguments, invalid_arguments); 3 distinct argument set(s).",
+   "evidence": {
+    "tool": "search_kb",
+    "retries": 2,
+    "args_never_changed": false,
+    "recovered": true,
+    "outcomes": [
+     "invalid_arguments",
+     "invalid_arguments",
+     "ok"
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "loop.retry_storm",
+   "severity": "medium",
+   "confidence": 0.7,
+   "trace_id": "0x3e738f33243f3c37635106bdd7c35815",
+   "task_id": "t033",
+   "span_ids": [
+    "0xc30664e5d86e1248",
+    "0xf120d2e69215265f",
+    "0x4b1896f499e29084"
+   ],
+   "title": "search_kb retried 2\u00d7 after failures, eventually succeeded",
+   "detail": "3 calls to search_kb; first 2 failed (invalid_arguments, invalid_arguments); 3 distinct argument set(s).",
+   "evidence": {
+    "tool": "search_kb",
+    "retries": 2,
+    "args_never_changed": false,
+    "recovered": true,
+    "outcomes": [
+     "invalid_arguments",
+     "invalid_arguments",
+     "ok"
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "loop.retry_storm",
+   "severity": "medium",
+   "confidence": 0.7,
+   "trace_id": "0x2b51b615a7ee0828f5c32682dc0f5450",
+   "task_id": "t036",
+   "span_ids": [
+    "0x330f26738c25f32e",
+    "0xdca4c21264e02fbc",
+    "0x43a5fdb519c62b14"
+   ],
+   "title": "search_kb retried 2\u00d7 after failures, eventually succeeded",
+   "detail": "3 calls to search_kb; first 2 failed (invalid_arguments, invalid_arguments); 3 distinct argument set(s).",
+   "evidence": {
+    "tool": "search_kb",
+    "retries": 2,
+    "args_never_changed": false,
+    "recovered": true,
+    "outcomes": [
+     "invalid_arguments",
+     "invalid_arguments",
+     "ok"
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "loop.retry_storm",
+   "severity": "medium",
+   "confidence": 0.7,
+   "trace_id": "0x802c73bd02d4c0f07aa35ab9dbca189f",
+   "task_id": "t039",
+   "span_ids": [
+    "0x2077cd0c21e15720",
+    "0x33dc1725282983fb",
+    "0x90fee195a7220c8f"
+   ],
+   "title": "search_kb retried 2\u00d7 after failures, eventually succeeded",
+   "detail": "3 calls to search_kb; first 2 failed (invalid_arguments, invalid_arguments); 3 distinct argument set(s).",
+   "evidence": {
+    "tool": "search_kb",
+    "retries": 2,
+    "args_never_changed": false,
+    "recovered": true,
+    "outcomes": [
+     "invalid_arguments",
+     "invalid_arguments",
+     "ok"
+    ]
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x95dff8ca66a74797babae7fafbd2678e",
+   "task_id": "t012",
+   "span_ids": [
+    "0x570ed628a053240d",
+    "0xa6ccd5f12756f740"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 1 extra turn(s)",
+   "detail": "1 rejected call(s) before search_kb succeeded; 553 tokens and 1449ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 1,
+    "extra_turns": 1,
+    "tokens": 553,
+    "wall_ms": 1448.5
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x561d81ce8f17e180ff3afb47f6be8d5b",
+   "task_id": "t013",
+   "span_ids": [
+    "0x21644a7564f963c2",
+    "0xb9abb04da20105a1",
+    "0x2a28ed3c62719ad4"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 2 extra turn(s)",
+   "detail": "2 rejected call(s) before search_kb succeeded; 1143 tokens and 4711ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 2,
+    "extra_turns": 2,
+    "tokens": 1143,
+    "wall_ms": 4711.4
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0xd294bfc36545a01eb42aa247980344da",
+   "task_id": "t031",
+   "span_ids": [
+    "0x1bcd22a2fa356c55",
+    "0xcb2867177e5016b5",
+    "0x0adf2339a10b96a4"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 2 extra turn(s)",
+   "detail": "2 rejected call(s) before search_kb succeeded; 1240 tokens and 7512ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 2,
+    "extra_turns": 2,
+    "tokens": 1240,
+    "wall_ms": 7511.6
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x3e738f33243f3c37635106bdd7c35815",
+   "task_id": "t033",
+   "span_ids": [
+    "0xc30664e5d86e1248",
+    "0xf120d2e69215265f",
+    "0x4b1896f499e29084"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 2 extra turn(s)",
+   "detail": "2 rejected call(s) before search_kb succeeded; 1228 tokens and 14455ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 2,
+    "extra_turns": 2,
+    "tokens": 1228,
+    "wall_ms": 14455.0
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x31e03258f612e4e28635750f106c6ac2",
+   "task_id": "t034",
+   "span_ids": [
+    "0x53ca09c50e700489",
+    "0xdd2df8f690e58652"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 1 extra turn(s)",
+   "detail": "1 rejected call(s) before search_kb succeeded; 561 tokens and 2041ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 1,
+    "extra_turns": 1,
+    "tokens": 561,
+    "wall_ms": 2041.1
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0xa34e45eb2e3d423d2afdd2daefaf5f17",
+   "task_id": "t035",
+   "span_ids": [
+    "0x6bc1d68a1107e1b8",
+    "0xae35795948b7d4fc"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 1 extra turn(s)",
+   "detail": "1 rejected call(s) before search_kb succeeded; 597 tokens and 2180ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 1,
+    "extra_turns": 1,
+    "tokens": 597,
+    "wall_ms": 2179.6
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x2b51b615a7ee0828f5c32682dc0f5450",
+   "task_id": "t036",
+   "span_ids": [
+    "0x330f26738c25f32e",
+    "0xdca4c21264e02fbc",
+    "0x43a5fdb519c62b14"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 2 extra turn(s)",
+   "detail": "2 rejected call(s) before search_kb succeeded; 1158 tokens and 4077ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 2,
+    "extra_turns": 2,
+    "tokens": 1158,
+    "wall_ms": 4077.2
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x7274597ef22d87765c60774b1055839e",
+   "task_id": "t037",
+   "span_ids": [
+    "0x22471e02fe1be333",
+    "0xb262528fdb83c06f",
+    "0x0be423df03cfa76c",
+    "0x5aa8a44085dc5e6a"
+   ],
+   "title": "recovered from unknown_tool on cancel_order after 3 extra turn(s)",
+   "detail": "3 rejected call(s) before search_kb succeeded; 1649 tokens and 75563ms spent recovering.",
+   "evidence": {
+    "failed_tool": "cancel_order",
+    "failure": "unknown_tool",
+    "recovered_with": "search_kb",
+    "wasted_calls": 3,
+    "extra_turns": 3,
+    "tokens": 1649,
+    "wall_ms": 75563.0
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x7274597ef22d87765c60774b1055839e",
+   "task_id": "t037",
+   "span_ids": [
+    "0xb262528fdb83c06f",
+    "0x0be423df03cfa76c",
+    "0x5aa8a44085dc5e6a"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 2 extra turn(s)",
+   "detail": "2 rejected call(s) before search_kb succeeded; 1235 tokens and 73287ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 2,
+    "extra_turns": 2,
+    "tokens": 1235,
+    "wall_ms": 73287.2
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x23e445ac46cdbad6ac492e18ebed82a2",
+   "task_id": "t038",
+   "span_ids": [
+    "0xb8b143cc2b7c59db",
+    "0x78755816ab190c50",
+    "0x2607ab9d6bdad2a5",
+    "0x502e5f1220cc7f17"
+   ],
+   "title": "recovered from unknown_tool on send_email after 3 extra turn(s)",
+   "detail": "3 rejected call(s) before search_kb succeeded; 1691 tokens and 7680ms spent recovering.",
+   "evidence": {
+    "failed_tool": "send_email",
+    "failure": "unknown_tool",
+    "recovered_with": "search_kb",
+    "wasted_calls": 3,
+    "extra_turns": 3,
+    "tokens": 1691,
+    "wall_ms": 7679.8
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x23e445ac46cdbad6ac492e18ebed82a2",
+   "task_id": "t038",
+   "span_ids": [
+    "0x78755816ab190c50",
+    "0x2607ab9d6bdad2a5",
+    "0x502e5f1220cc7f17"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 2 extra turn(s)",
+   "detail": "2 rejected call(s) before search_kb succeeded; 1259 tokens and 3997ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 2,
+    "extra_turns": 2,
+    "tokens": 1259,
+    "wall_ms": 3997.3
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x802c73bd02d4c0f07aa35ab9dbca189f",
+   "task_id": "t039",
+   "span_ids": [
+    "0x2077cd0c21e15720",
+    "0x33dc1725282983fb",
+    "0x90fee195a7220c8f"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 2 extra turn(s)",
+   "detail": "2 rejected call(s) before search_kb succeeded; 1136 tokens and 88782ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 2,
+    "extra_turns": 2,
+    "tokens": 1136,
+    "wall_ms": 88782.3
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x64c21f3e9d79ee29c0da1d090bf23e0f",
+   "task_id": "t040",
+   "span_ids": [
+    "0x0448cebc62e7e95b",
+    "0xd265d33bd466179b"
+   ],
+   "title": "recovered from unknown_tool on update_user after 1 extra turn(s)",
+   "detail": "1 rejected call(s) before get_user succeeded; 412 tokens and 1646ms spent recovering.",
+   "evidence": {
+    "failed_tool": "update_user",
+    "failure": "unknown_tool",
+    "recovered_with": "get_user",
+    "wasted_calls": 1,
+    "extra_turns": 1,
+    "tokens": 412,
+    "wall_ms": 1646.0
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/users.py",
+    "function": "get_user",
+    "line": 29
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x64c21f3e9d79ee29c0da1d090bf23e0f",
+   "task_id": "t040",
+   "span_ids": [
+    "0xa9023999a356af1a",
+    "0x2cab2ddda882a513",
+    "0xd7987bd61e6a81fd"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 2 extra turn(s)",
+   "detail": "2 rejected call(s) before search_kb succeeded; 1376 tokens and 3475ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 2,
+    "extra_turns": 2,
+    "tokens": 1376,
+    "wall_ms": 3474.8
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0x72375c332b22a98c6fe849760012b88a",
+   "task_id": "t041",
+   "span_ids": [
+    "0xe0acd9466b1851e5",
+    "0x4dce54f5c19081a4",
+    "0x8ceee097ef05d39f"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 2 extra turn(s)",
+   "detail": "2 rejected call(s) before search_kb succeeded; 1204 tokens and 7525ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 2,
+    "extra_turns": 2,
+    "tokens": 1204,
+    "wall_ms": 7524.5
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "error.self_correction_cost",
+   "severity": "low",
+   "confidence": 0.85,
+   "trace_id": "0xdcb33419fa70883f55715f4edd958a6f",
+   "task_id": "t042",
+   "span_ids": [
+    "0xb79783ceb673198f",
+    "0xa583f6a791763126",
+    "0xd7f144236340d490",
+    "0x105005649845f695"
+   ],
+   "title": "recovered from invalid_arguments on search_kb after 3 extra turn(s)",
+   "detail": "3 rejected call(s) before search_kb succeeded; 2027 tokens and 5938ms spent recovering.",
+   "evidence": {
+    "failed_tool": "search_kb",
+    "failure": "invalid_arguments",
+    "recovered_with": "search_kb",
+    "wasted_calls": 3,
+    "extra_turns": 3,
+    "tokens": 2027,
+    "wall_ms": 5938.0
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/docs.py",
+    "function": "search_kb",
+    "line": 36
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "low",
+   "confidence": 0.621,
+   "trace_id": "0xda327d63601047c177635faf66ca80c6",
+   "task_id": "t006",
+   "span_ids": [
+    "0x1087d6ee19ebf0c6"
+   ],
+   "title": "calculate took 0ms (2.4\u00d7 its median)",
+   "detail": "baseline median 0.2ms, MAD 0.0ms over n=8",
+   "evidence": {
+    "duration_ms": 0.495872,
+    "median_ms": 0.204928,
+    "mad_ms": 0.020991999999999997,
+    "n": 8,
+    "ratio": 2.42,
+    "transport_retries": 0
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/calc.py",
+    "function": "calculate",
+    "line": 35
+   },
+   "scope": "trace"
+  }
+ ],
+ "summary": {
+  "total": 59,
+  "by_detector": {
+   "error.self_correction_cost": 16,
+   "args.schema_invalid": 15,
+   "perf.latency_outlier": 12,
+   "error.no_progress": 5,
+   "loop.retry_storm": 4,
+   "tool.unknown_name": 3,
+   "loop.near_duplicate": 3,
+   "args.type_confusion": 1
+  },
+  "by_severity": {
+   "high": 16,
+   "medium": 26,
+   "low": 17
+  },
+  "traces_with_findings": 20,
+  "traces_with_high": 10,
+  "detectors_run": [
+   "args.schema_invalid",
+   "args.type_confusion",
+   "error.ignored",
+   "error.no_progress",
+   "error.self_correction_cost",
+   "tool.unknown_name",
+   "tool.confusable_name",
+   "answer.unsupported",
+   "loop.repeated_call",
+   "loop.cycle",
+   "loop.retry_storm",
+   "loop.near_duplicate",
+   "perf.latency_outlier",
+   "perf.context_bloat",
+   "perf.token_spike"
+  ]
+ }
+}
