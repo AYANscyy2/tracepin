@@ -24,7 +24,7 @@ def run(
     otlp: bool = typer.Option(True, help="Also export to Jaeger at localhost:4318."),
     only: str = typer.Option("", help="Comma-separated task ids to run (default: all)."),
 ):
-    load_dotenv()
+    load_dotenv(".env"); load_dotenv(".env.local")
     run_id = uuid.uuid4().hex[:12]
     out_path = out.format(run_id=run_id)
 
