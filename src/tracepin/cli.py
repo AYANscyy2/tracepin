@@ -70,3 +70,67 @@ def compare(
 
 if __name__ == "__main__":
     app()
+
+
+@app.command()
+def rootcause(
+    findings_file: str = typer.Argument(...),
+    top: int = typer.Option(5, help="How many locations to show."),
+    svg: str = typer.Option(""),
+    width: int = typer.Option(0),
+):
+    """Rank source locations by the number of tasks their findings break, with git blame."""
+    from tracepin.analyze import Analysis
+    from tracepin.explain import render_rootcause
+
+    console = Console(record=bool(svg), width=width or None)
+    render_rootcause(Analysis.load(findings_file), console, top=top)
+    if svg:
+        console.save_svg(svg, title="tracepin rootcause")
+
+
+@app.command()
+def explain(
+    findings_file: str = typer.Argument(...),
+    trace: str = typer.Argument(..., help="Trace id (prefix ok) or task id."),
+    svg: str = typer.Option(""),
+    width: int = typer.Option(0),
+):
+    """One trace: prompt, findings, timeline, code context of the top finding, suggested fix."""
+    from tracepin.analyze import Analysis
+    from tracepin.explain import find_trace, render_explain
+
+    a = Analysis.load(findings_file)
+    ts = find_trace(a, trace)
+    if ts is None:
+        raise typer.BadParameter(f"no trace matching {trace!r} in {findings_file}")
+    console = Console(record=bool(svg), width=width or None)
+    render_explain(a, ts, console)
+    if svg:
+        console.save_svg(svg, title="tracepin explain")
+
+
+@app.command()
+def repro(
+    findings_file: str = typer.Argument(...),
+    trace: str = typer.Argument(..., help="Trace id (prefix ok) or task id."),
+    out: str = typer.Option("", help="Script path (default repro/<task>_repro.py)."),
+    trace_file: str = typer.Option("", help="Run JSONL to extract the recorded spans from (default traces/run_<run_id>*.jsonl)."),
+):
+    """Emit a standalone script that re-runs the task and exits 0 only if the failure reproduces."""
+    import glob
+
+    from tracepin.analyze import Analysis
+    from tracepin.explain import find_trace
+    from tracepin.repro import generate, signature
+
+    a = Analysis.load(findings_file)
+    ts = find_trace(a, trace)
+    if ts is None:
+        raise typer.BadParameter(f"no trace matching {trace!r} in {findings_file}")
+    if not trace_file:
+        hits = glob.glob(f"traces/run_*{a.run['run_id']}*.jsonl")
+        trace_file = hits[0] if hits else ""
+    path = generate(a, ts, trace_file or None, pathlib.Path(out or f"repro/{ts.task_id}_repro.py"))
+    Console().print(f"wrote [bold]{path}[/]  signature={signature(a, ts.trace_id)}"
+                    + (f"  spans → {path.with_name(ts.task_id + '_trace.jsonl')}" if trace_file else "  [yellow](no trace file found; spans not extracted)[/]"))

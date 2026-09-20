@@ -19,6 +19,7 @@ class TraceSummary(BaseModel):
 
     trace_id: str
     task_id: str
+    task_prompt: str = ""
     tags: list[str]
     success: bool
     stop_reason: str
@@ -96,6 +97,7 @@ def analyze_run(run: Run) -> Analysis:
             TraceSummary(
                 trace_id=trace.trace_id,
                 task_id=trace.task_id,
+                task_prompt=trace.task_prompt,
                 tags=trace.tags,
                 success=trace.success,
                 stop_reason=trace.stop_reason,
