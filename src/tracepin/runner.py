@@ -18,7 +18,7 @@ console = Console()
 @app.command()
 def run(
     tasks: str = typer.Option("tasks/tasks.jsonl", help="Path to tasks JSONL."),
-    model: str = typer.Option("gemini-2.0-flash-lite"),
+    model: str = typer.Option("gemini-3.1-flash-lite"),
     prompt_version: str = typer.Option("v1", help="Name of prompts/<version>.md"),
     out: str = typer.Option("traces/run_{run_id}.jsonl", help="Trace output; {run_id} is substituted."),
     otlp: bool = typer.Option(True, help="Also export to Jaeger at localhost:4318."),
