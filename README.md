@@ -197,6 +197,31 @@ and that is a separate run so the effect can be measured on its own.
 23, 2026" and the checker wants `2026-09-23`. A checker bug, not an agent bug; the
 "same signature" note is what tells you not to chase it.
 
+### Regression: v2 → v3 — the tool-description fix
+
+v3 is the same v2 prompt with one change: the `search_kb` description on
+[docs.py:36](src/tracepin/tools/docs.py#L36) now states the nested shape
+(`terms` list, `filters.category` required, `after` date). Prompt version is still `v2`;
+the runs are told apart by `git_sha` in the header.
+
+```bash
+tracepin compare findings/sample_v2_35lite.json findings/sample_v3_35lite.json   # exit 0
+```
+
+![tracepin compare v2 -> v3: 0 regressed, 2 fixed, args.schema_invalid 9 -> 0](docs/compare_v2_v3.png)
+
+| | v2 | v3 |
+|---|---|---|
+| passed | 41/44 | **43/44** |
+| invalid-argument events across the run | 14 | **0** |
+| `args.schema_invalid` / `error.self_correction_cost` / `loop.retry_storm` findings | 9 / 6 / 2 | **0 / 0 / 0** |
+| tool calls / iterations | 56 / 99 | 43 / 86 |
+
+REGRESSED is empty, `compare` exits 0, and the two tasks the retry cap had cost (t032,
+t036) pass again. The only remaining failure is the t024 checker bug. That is the whole
+loop: the detector inverted the blame from the model to a docstring, the docstring
+changed, the diff proves it.
+
 ## Run it
 
 ```bash

@@ -90,3 +90,13 @@ Run `run_v1_35lite_c506b6cf636b` (prompt v1, `gemini-3.5-flash-lite`, 35/44):
   checker wants `2026-09-23`. Checker bug.
 - Aggregate: −35% input tokens, −45% tool calls, −30% iterations, −93% wall clock
   (the v1 run also absorbed transport retries).
+
+## 7. v2 → v3: fixing the `search_kb` description (run 3a519473661c → 5ac209f1fdfd)
+
+- Only `docs.py:36` changed. 41/44 → 43/44, REGRESSED empty, `compare` exits 0.
+- Invalid-argument events in the run: 14 → **0**. `args.schema_invalid`,
+  `error.self_correction_cost`, `loop.retry_storm`, `args.type_confusion`, `error.ignored`
+  all → 0. Tool calls 56 → 43, iterations 99 → 86.
+- t032 and t036 (the v2 regressions) pass again: the retry cap only hurt because the tool
+  was undocumented.
+- Still failing: t024 (checker wants `2026-09-23`, model writes "September 23, 2026").

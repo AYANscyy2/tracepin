@@ -1,0 +1,1376 @@
+{
+ "schema_version": 1,
+ "run": {
+  "run_id": "5ac209f1fdfd",
+  "model": "gemini-3.5-flash-lite",
+  "prompt_version": "v2",
+  "git_sha": "dac1067c2ca369cad0db33408acc8a67067c2cd2",
+  "task_count": 44,
+  "pass_count": 43,
+  "skipped_traces": 0,
+  "total_input_tokens": 43114,
+  "total_output_tokens": 2017,
+  "total_wall_ms": 228280.6
+ },
+ "baselines": {
+  "tools": {
+   "calculate": {
+    "median_ms": 0.178944,
+    "mad_ms": 0.036096,
+    "n": 8
+   },
+   "get_user": {
+    "median_ms": 0.110592,
+    "mad_ms": 0.009855999999999997,
+    "n": 8
+   },
+   "fetch_user": {
+    "median_ms": 0.12864,
+    "mad_ms": 0.01856,
+    "n": 4
+   },
+   "search_kb": {
+    "median_ms": 0.175104,
+    "mad_ms": 0.014848,
+    "n": 7
+   },
+   "fetch_order_status": {
+    "median_ms": 0.166144,
+    "mad_ms": 0.033024000000000026,
+    "n": 11
+   }
+  },
+  "chat": {
+   "gemini-3.5-flash-lite": {
+    "median_ms": 1066.344832,
+    "mad_ms": 103.28537599999999,
+    "n": 86
+   }
+  },
+  "chat_output_tokens": {
+   "median": 21.0,
+   "mad": 5.0,
+   "n": 86
+  },
+  "chat_input_tokens": {
+   "median": 484.0,
+   "mad": 19.0,
+   "n": 86
+  }
+ },
+ "traces": [
+  {
+   "trace_id": "0x4333b3411a5816596da669976106dc8b",
+   "task_id": "t001",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2839.4,
+   "input_tokens": 961,
+   "output_tokens": 30,
+   "final_answer": "17 * 23 = 391",
+   "timeline": [
+    {
+     "span_id": "0x88dea6b9b1f4f957",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.07,
+     "error": null,
+     "arguments": "{'expression': '17 * 23'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x821a2256486df0b2b8c18d03b6f7c60c",
+   "task_id": "t002",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 1878.4,
+   "input_tokens": 977,
+   "output_tokens": 43,
+   "final_answer": "(145 + 255) / 8 = 50",
+   "timeline": [
+    {
+     "span_id": "0x9e74addd78fc2e68",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.22,
+     "error": null,
+     "arguments": "{'expression': '(145 + 255) / 8'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xed1809a704fa090eadec650c0454df75",
+   "task_id": "t003",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 3,
+   "duration_ms": 3731.2,
+   "input_tokens": 1551,
+   "output_tokens": 49,
+   "final_answer": "2 to the power of 10 is 1024.",
+   "timeline": [
+    {
+     "span_id": "0xa9640637f790e75d",
+     "tool": "calculate",
+     "outcome": "exception",
+     "duration_ms": 2.51,
+     "error": "ValueError: unsupported expression element: BinOp(left=Constant(value=2), op=BitXor(), right=Constant(value=10))",
+     "arguments": "{'expression': '2^10'}"
+    },
+    {
+     "span_id": "0x4fd876f24b8c059e",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.15,
+     "error": null,
+     "arguments": "{'expression': '2**10'}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0x6bc8d517a5ae92ecb5aaed3f3c501338",
+   "task_id": "t004",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 1907.4,
+   "input_tokens": 987,
+   "output_tokens": 31,
+   "final_answer": "The total is 59.97.",
+   "timeline": [
+    {
+     "span_id": "0x04f7bcd96cc96dc8",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'expression': '3 * 19.99'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x40e2bfe29abc7d1775213c78e26165a9",
+   "task_id": "t005",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2086.9,
+   "input_tokens": 976,
+   "output_tokens": 40,
+   "final_answer": "1000 - 37 * 4 = 852",
+   "timeline": [
+    {
+     "span_id": "0x932b5363aef49ad9",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.22,
+     "error": null,
+     "arguments": "{'expression': '1000 - 37 * 4'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x5b3e9e977081a00789e888effe716bb0",
+   "task_id": "t006",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2070.8,
+   "input_tokens": 969,
+   "output_tokens": 35,
+   "final_answer": "The remainder when 100 is divided by 7 is 2.",
+   "timeline": [
+    {
+     "span_id": "0xd96e93479d50068c",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.13,
+     "error": null,
+     "arguments": "{'expression': '100 % 7'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xf74cccd73150419cdbd6534a0d1721f6",
+   "task_id": "t007",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2496.6,
+   "input_tokens": 1000,
+   "output_tokens": 35,
+   "final_answer": "The email address for user ID 101 is alice@example.com.",
+   "timeline": [
+    {
+     "span_id": "0x1072bc32c363d960",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.08,
+     "error": null,
+     "arguments": "{'user_id': 101}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x93c6039e0dfc2eeb342c8cdae3a602f1",
+   "task_id": "t008",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2097.1,
+   "input_tokens": 994,
+   "output_tokens": 29,
+   "final_answer": "User 103 is on the enterprise plan.",
+   "timeline": [
+    {
+     "span_id": "0x81161a8d8c9a53ca",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.09,
+     "error": null,
+     "arguments": "{'user_id': 103}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x2a9c12ac3205e0fe3e51e3274f507777",
+   "task_id": "t009",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2704.9,
+   "input_tokens": 1000,
+   "output_tokens": 32,
+   "final_answer": "The user with ID 104 is in Germany (DE).",
+   "timeline": [
+    {
+     "span_id": "0x1a4346b2fb25b290",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.18,
+     "error": null,
+     "arguments": "{'user_id': 104}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xfe7a29510d99bbfd5a7859dba29ac36a",
+   "task_id": "t010",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 31292.8,
+   "input_tokens": 1002,
+   "output_tokens": 27,
+   "final_answer": "Bob's plan is the **free** plan.",
+   "timeline": [
+    {
+     "span_id": "0x1c82641d587ae48e",
+     "tool": "fetch_user",
+     "outcome": "ok",
+     "duration_ms": 0.21,
+     "error": null,
+     "arguments": "{'username': 'bob'}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0xc242338e377754cd76feebb29804c5a1",
+   "task_id": "t011",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 1798.9,
+   "input_tokens": 990,
+   "output_tokens": 32,
+   "final_answer": "The email for the username \"erin\" is erin@example.com.",
+   "timeline": [
+    {
+     "span_id": "0xbdd095fae72098b9",
+     "tool": "fetch_user",
+     "outcome": "ok",
+     "duration_ms": 0.12,
+     "error": null,
+     "arguments": "{'username': 'erin'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xf957525fd8af6f1e70af376bc6022deb",
+   "task_id": "t012",
+   "tags": [
+    "clean",
+    "kb"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2496.8,
+   "input_tokens": 1031,
+   "output_tokens": 36,
+   "final_answer": "How to reset your password",
+   "timeline": [
+    {
+     "span_id": "0x49e7e11f43500082",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.2,
+     "error": null,
+     "arguments": "{'query': {'terms': ['password', 'reset'], 'filters': {'category': 'account', 'after': None}}}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x36ab01df4040591af1d67929868ec0f6",
+   "task_id": "t013",
+   "tags": [
+    "clean",
+    "kb"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2259.8,
+   "input_tokens": 1010,
+   "output_tokens": 53,
+   "final_answer": "The billing article about refunds is \"Refund policy for annual plans\" (ID: `kb-2`).",
+   "timeline": [
+    {
+     "span_id": "0xabdf59dcb2abf316",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.17,
+     "error": null,
+     "arguments": "{'query': {'terms': ['refund', 'refunds'], 'filters': {'category': 'billing', 'after': None}}}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x58783bbdb215f1e5a183e762992d073e",
+   "task_id": "t014",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2107.8,
+   "input_tokens": 972,
+   "output_tokens": 38,
+   "final_answer": "12.5% of 640 is 80.",
+   "timeline": [
+    {
+     "span_id": "0x4232438e441d1cbb",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.21,
+     "error": null,
+     "arguments": "{'expression': '0.125 * 640'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xaccd84f94274b613b94674d440390d30",
+   "task_id": "t015",
+   "tags": [
+    "clean",
+    "users"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2299.3,
+   "input_tokens": 998,
+   "output_tokens": 30,
+   "final_answer": "The username for user 102 is **bob**.",
+   "timeline": [
+    {
+     "span_id": "0x71d73b6035110fc7",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.13,
+     "error": null,
+     "arguments": "{'user_id': 102}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x7e2be36a84694f2e95ea3b8ed767430a",
+   "task_id": "t016",
+   "tags": [
+    "clean",
+    "calc"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2285.8,
+   "input_tokens": 984,
+   "output_tokens": 31,
+   "final_answer": "17.75",
+   "timeline": [
+    {
+     "span_id": "0xd078a1345aacf07a",
+     "tool": "calculate",
+     "outcome": "ok",
+     "duration_ms": 0.15,
+     "error": null,
+     "arguments": "{'expression': '3.5 + 4.25 + 10'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x461bf1d9fdcbec424af37d83f6797616",
+   "task_id": "t017",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2109.8,
+   "input_tokens": 1006,
+   "output_tokens": 56,
+   "final_answer": "Order ORD-4471 has been **shipped** and is expected to arrive on **2026-09-23**.",
+   "timeline": [
+    {
+     "span_id": "0xa608743adfcf89f7",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.11,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-4471'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x50550f86cd4cecc5bc488c11d1f4fed9",
+   "task_id": "t018",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 27459.9,
+   "input_tokens": 1003,
+   "output_tokens": 55,
+   "final_answer": "Yes, order ORD-7788 has been delivered (delivery date / ETA was 2026-09-18).",
+   "timeline": [
+    {
+     "span_id": "0xf144ddf05be5a1ab",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.17,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-7788'}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0xbe14ca80842c1923f47518fe65236ed4",
+   "task_id": "t019",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2091.8,
+   "input_tokens": 1001,
+   "output_tokens": 58,
+   "final_answer": "Order ORD-1002 is currently **processing**, with an estimated arrival date (ETA) of **2026-09-25**.",
+   "timeline": [
+    {
+     "span_id": "0xf3943566e246cc12",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.12,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-1002'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xc08db302720d8dfa486fc325325df49b",
+   "task_id": "t020",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 1895.2,
+   "input_tokens": 986,
+   "output_tokens": 36,
+   "final_answer": "Order ORD-3310 has been cancelled.",
+   "timeline": [
+    {
+     "span_id": "0x0193db47833a5e70",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.15,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-3310'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x49efe2610703f81ed3a327990f8f76eb",
+   "task_id": "t021",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 3,
+   "duration_ms": 3124.2,
+   "input_tokens": 1577,
+   "output_tokens": 79,
+   "final_answer": "Order ORD-9054 is currently backordered and is expected to arrive on 2026-10-04.",
+   "timeline": [
+    {
+     "span_id": "0x34f6b00bc9541ce4",
+     "tool": "fetch_order_status",
+     "outcome": "exception",
+     "duration_ms": 0.65,
+     "error": "UpstreamError: HTTP 500: order service unavailable",
+     "arguments": "{'order_id': 'ORD-9054'}"
+    },
+    {
+     "span_id": "0xa230ecef97e58e31",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.2,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-9054'}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0x9bd59b086d07d1cb287004fd8145b1c8",
+   "task_id": "t022",
+   "tags": [
+    "flaky",
+    "multi"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2107.5,
+   "input_tokens": 1087,
+   "output_tokens": 110,
+   "final_answer": "- **ORD-2201:** Status is `shipped` (ETA: 2026-09-22)\n- **ORD-6120:** Status is `processing` (ETA: 2026-09-27)",
+   "timeline": [
+    {
+     "span_id": "0x4ca6e3b3305b26d8",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.17,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-2201'}"
+    },
+    {
+     "span_id": "0x7e86359e19317e16",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.13,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-6120'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x05031dcf82be60a749a29effffba16f4",
+   "task_id": "t023",
+   "tags": [
+    "flaky"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2242.8,
+   "input_tokens": 1001,
+   "output_tokens": 59,
+   "final_answer": "No, order ORD-8833 is not still in transit; it has been delivered (ETA was 2026-09-15).",
+   "timeline": [
+    {
+     "span_id": "0x3d343eb05fd296b1",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.16,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-8833'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x6a1aed4b0199778b0f37ef4d11474ef6",
+   "task_id": "t024",
+   "tags": [
+    "flaky"
+   ],
+   "success": false,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2377.0,
+   "input_tokens": 1016,
+   "output_tokens": 55,
+   "final_answer": "Order ORD-4471 has shipped, and its estimated arrival date (ETA) is September 23, 2026.",
+   "timeline": [
+    {
+     "span_id": "0xbcd7c6f876f515af",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.2,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-4471'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x81adc5d61d097a22295badb8aa1e52a5",
+   "task_id": "t025",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2094.0,
+   "input_tokens": 984,
+   "output_tokens": 61,
+   "final_answer": "Here is the profile for alice:\n- **User ID:** 101\n- **Username:** alice\n- **Email:** alice@example.com\n- **Country:** US\n- **Plan:** pro",
+   "timeline": [
+    {
+     "span_id": "0x6eaa73ce72c6da47",
+     "tool": "fetch_user",
+     "outcome": "ok",
+     "duration_ms": 0.24,
+     "error": null,
+     "arguments": "{'username': 'alice'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x9a0e8a0331bf11cf448706bae8a60f4d",
+   "task_id": "t026",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 28970.3,
+   "input_tokens": 993,
+   "output_tokens": 25,
+   "final_answer": "Carol's country is the UK.",
+   "timeline": [
+    {
+     "span_id": "0xb532e2b831c622bd",
+     "tool": "fetch_user",
+     "outcome": "ok",
+     "duration_ms": 0.14,
+     "error": null,
+     "arguments": "{'username': 'carol'}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0xc2dddcd0851f82c24b3db0496d51a4ba",
+   "task_id": "t027",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2097.8,
+   "input_tokens": 994,
+   "output_tokens": 51,
+   "final_answer": "User ID 105:\n- Username: erin\n- Email: erin@example.com\n- Country: IN\n- Plan: free",
+   "timeline": [
+    {
+     "span_id": "0xc7ef0e82b55f0cf4",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.12,
+     "error": null,
+     "arguments": "{'user_id': 105}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x10ea6cd2385586aa7dc648a70b16e71d",
+   "task_id": "t028",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2295.6,
+   "input_tokens": 1001,
+   "output_tokens": 26,
+   "final_answer": "Dave is on the **pro** plan.",
+   "timeline": [
+    {
+     "span_id": "0x7b531aead9ca52cb",
+     "tool": "fetch_user",
+     "outcome": "ok",
+     "duration_ms": 0.1,
+     "error": null,
+     "arguments": "{'username': 'dave'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x9aef68b0638cb3f31d64b747b303909d",
+   "task_id": "t029",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 1900.2,
+   "input_tokens": 1006,
+   "output_tokens": 44,
+   "final_answer": "User ID 102 is Bob (username: `bob`), and his email address is `bob@example.com`.",
+   "timeline": [
+    {
+     "span_id": "0x744a09a756a553cb",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.1,
+     "error": null,
+     "arguments": "{'user_id': 102}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xc8b5274d4c89826b35e51193daf3652f",
+   "task_id": "t030",
+   "tags": [
+    "confusable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 1689.7,
+   "input_tokens": 996,
+   "output_tokens": 30,
+   "final_answer": "The username for user 101 is **alice**.",
+   "timeline": [
+    {
+     "span_id": "0xc4490f37283a7070",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.11,
+     "error": null,
+     "arguments": "{'user_id': 101}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xa7ea61a2f158a4f69bbb777fdb8c0954",
+   "task_id": "t031",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2302.4,
+   "input_tokens": 1059,
+   "output_tokens": 54,
+   "final_answer": "API rate limits explained",
+   "timeline": [
+    {
+     "span_id": "0xd90237464398fd6e",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.18,
+     "error": null,
+     "arguments": "{'query': {'terms': ['rate', 'limit', 'limits'], 'filters': {'category': 'api', 'after': '2026-01-01'}}}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x14205ea515dbf2aca00e0232e3baff44",
+   "task_id": "t032",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2294.3,
+   "input_tokens": 1052,
+   "output_tokens": 85,
+   "final_answer": "Found KB article:\n- **Title**: Two-factor authentication setup (ID: kb-4)\n- **Published**: 2026-07-01",
+   "timeline": [
+    {
+     "span_id": "0xd59d0ac4cd1da0f8",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.15,
+     "error": null,
+     "arguments": "{'query': {'terms': ['two-factor', 'authentication'], 'filters': {'category': 'account', 'after': '2026-06-01'}}}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x6e85b55844658be9d66e37f61ce87800",
+   "task_id": "t033",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2309.1,
+   "input_tokens": 1008,
+   "output_tokens": 67,
+   "final_answer": "No billing articles mentioning \"invoices\" were found published after 2025-12-31.",
+   "timeline": [
+    {
+     "span_id": "0x023c09a527a80f38",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.18,
+     "error": null,
+     "arguments": "{'query': {'terms': ['invoices'], 'filters': {'category': 'billing', 'after': '2025-12-31'}}}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xb1bf440ad416f06cd8b084121d953096",
+   "task_id": "t034",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 29344.4,
+   "input_tokens": 1021,
+   "output_tokens": 48,
+   "final_answer": "The article ID is **kb-7** (Title: \"Webhook retry behaviour\").",
+   "timeline": [
+    {
+     "span_id": "0x714a2649b3820934",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.2,
+     "error": null,
+     "arguments": "{'query': {'terms': ['webhook', 'retry'], 'filters': {'category': 'api', 'after': None}}}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0x3e85554a59cbabe6e81b0b76841a427b",
+   "task_id": "t035",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2094.5,
+   "input_tokens": 1027,
+   "output_tokens": 48,
+   "final_answer": "No.",
+   "timeline": [
+    {
+     "span_id": "0x26461679abb76142",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.19,
+     "error": null,
+     "arguments": "{'query': {'terms': ['CSV', 'export'], 'filters': {'category': 'data', 'after': '2026-01-01'}}}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x4014721498e9fd4e6351a9158e867265",
+   "task_id": "t036",
+   "tags": [
+    "kb_filters"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2504.5,
+   "input_tokens": 1021,
+   "output_tokens": 67,
+   "final_answer": "The account article \"Deleting your account\" (ID: kb-8) was published on 2025-09-05.",
+   "timeline": [
+    {
+     "span_id": "0x57cca2df35a38177",
+     "tool": "search_kb",
+     "outcome": "ok",
+     "duration_ms": 0.13,
+     "error": null,
+     "arguments": "{'query': {'terms': ['deleting', 'account', 'GDPR'], 'filters': {'category': 'account', 'after': None}}}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xb8acfdc65573ba9d8c1272f0f16b543b",
+   "task_id": "t037",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2088.5,
+   "input_tokens": 1001,
+   "output_tokens": 54,
+   "final_answer": "I cannot cancel orders directly. Please contact support or check your account settings to cancel order ORD-1002 (current status: processing).",
+   "timeline": [
+    {
+     "span_id": "0x65f34565fb967ce8",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.12,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-1002'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x15a69b33cc8bc9b6e53e65824b3cf8f6",
+   "task_id": "t038",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 1,
+   "duration_ms": 1066.7,
+   "input_tokens": 472,
+   "output_tokens": 16,
+   "final_answer": "I cannot send emails as I do not have a tool available to send emails.",
+   "timeline": [],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x4c561282d447dd11bfe2cfe1193b6d9d",
+   "task_id": "t039",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 1,
+   "duration_ms": 1076.5,
+   "input_tokens": 464,
+   "output_tokens": 18,
+   "final_answer": "I cannot check the weather because I do not have access to any weather tools or APIs.",
+   "timeline": [],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x56975ee619e14f6128e5f20ad5a4a364",
+   "task_id": "t040",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2903.1,
+   "input_tokens": 998,
+   "output_tokens": 42,
+   "final_answer": "I cannot update user 104's plan because there is no available tool for modifying user data or plans.",
+   "timeline": [
+    {
+     "span_id": "0xb2a5a2daa2d8d76d",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.11,
+     "error": null,
+     "arguments": "{'user_id': 104}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xc96004cb8895b6111c6eef386dd98625",
+   "task_id": "t041",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 1,
+   "duration_ms": 1070.3,
+   "input_tokens": 465,
+   "output_tokens": 37,
+   "final_answer": "I cannot list all users on the pro plan because there is no tool available to query users by plan type. I can only look up individual users by their numeric user ID or username.",
+   "timeline": [],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0x40404c5d4317b40542355e153a44f9d7",
+   "task_id": "t042",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 2491.4,
+   "input_tokens": 1003,
+   "output_tokens": 64,
+   "final_answer": "I cannot issue refunds as I do not have a tool or capability to process refunds. Please contact our billing or customer support team directly to request a refund for order ORD-7788.",
+   "timeline": [
+    {
+     "span_id": "0xa730a2947b0ee7e9",
+     "tool": "fetch_order_status",
+     "outcome": "ok",
+     "duration_ms": 0.17,
+     "error": null,
+     "arguments": "{'order_id': 'ORD-7788'}"
+    }
+   ],
+   "finding_ids": []
+  },
+  {
+   "trace_id": "0xc28d31238eb1dc194c7f8c079893b118",
+   "task_id": "t043",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 2,
+   "duration_ms": 26250.9,
+   "input_tokens": 998,
+   "output_tokens": 65,
+   "final_answer": "I can retrieve the user profile for user 101 (Alice), but I do not have a tool to list or count a user's past orders. Therefore, I cannot tell you how many orders she placed last month.",
+   "timeline": [
+    {
+     "span_id": "0x3d1e98f63db6a6cc",
+     "tool": "get_user",
+     "outcome": "ok",
+     "duration_ms": 0.1,
+     "error": null,
+     "arguments": "{'user_id': 101}"
+    }
+   ],
+   "finding_ids": [
+    "perf.latency_outlier"
+   ]
+  },
+  {
+   "trace_id": "0x53bba7c430ae1ee6656f466f0dc1624f",
+   "task_id": "t044",
+   "tags": [
+    "unsolvable"
+   ],
+   "success": true,
+   "stop_reason": "answered",
+   "iterations": 1,
+   "duration_ms": 1674.4,
+   "input_tokens": 472,
+   "output_tokens": 36,
+   "final_answer": "I cannot do that. I only have tools to look up users, check order status, search the knowledge base, and calculate expressions; I cannot create or edit knowledge base articles.",
+   "timeline": [],
+   "finding_ids": []
+  }
+ ],
+ "findings": [
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0xed1809a704fa090eadec650c0454df75",
+   "task_id": "t003",
+   "span_ids": [
+    "0xa9640637f790e75d"
+   ],
+   "title": "calculate took 3ms (14.0\u00d7 its median)",
+   "detail": "baseline median 0.2ms, MAD 0.0ms over n=8",
+   "evidence": {
+    "duration_ms": 2.511872,
+    "median_ms": 0.178944,
+    "mad_ms": 0.036096,
+    "n": 8,
+    "ratio": 14.04,
+    "transport_retries": 0
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/calc.py",
+    "function": "calculate",
+    "line": 35
+   },
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0xfe7a29510d99bbfd5a7859dba29ac36a",
+   "task_id": "t010",
+   "span_ids": [
+    "0x07cbc58012ab38c9"
+   ],
+   "title": "chat gemini-3.5-flash-lite took 30226ms (28.3\u00d7 its median)",
+   "detail": "baseline median 1066.3ms, MAD 103.3ms over n=86; 1 transport retries inside the span",
+   "evidence": {
+    "duration_ms": 30226.11584,
+    "median_ms": 1066.344832,
+    "mad_ms": 103.28537599999999,
+    "n": 86,
+    "ratio": 28.35,
+    "transport_retries": 1
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0x50550f86cd4cecc5bc488c11d1f4fed9",
+   "task_id": "t018",
+   "span_ids": [
+    "0x451c6c19bccf266b"
+   ],
+   "title": "chat gemini-3.5-flash-lite took 26206ms (24.6\u00d7 its median)",
+   "detail": "baseline median 1066.3ms, MAD 103.3ms over n=86; 1 transport retries inside the span",
+   "evidence": {
+    "duration_ms": 26205.540864,
+    "median_ms": 1066.344832,
+    "mad_ms": 103.28537599999999,
+    "n": 86,
+    "ratio": 24.58,
+    "transport_retries": 1
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0x9a0e8a0331bf11cf448706bae8a60f4d",
+   "task_id": "t026",
+   "span_ids": [
+    "0x7babf94c5f474910"
+   ],
+   "title": "chat gemini-3.5-flash-lite took 28150ms (26.4\u00d7 its median)",
+   "detail": "baseline median 1066.3ms, MAD 103.3ms over n=86; 1 transport retries inside the span",
+   "evidence": {
+    "duration_ms": 28150.00704,
+    "median_ms": 1066.344832,
+    "mad_ms": 103.28537599999999,
+    "n": 86,
+    "ratio": 26.4,
+    "transport_retries": 1
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0xb1bf440ad416f06cd8b084121d953096",
+   "task_id": "t034",
+   "span_ids": [
+    "0x754a0861c3baafdc"
+   ],
+   "title": "chat gemini-3.5-flash-lite took 28317ms (26.6\u00d7 its median)",
+   "detail": "baseline median 1066.3ms, MAD 103.3ms over n=86; 1 transport retries inside the span",
+   "evidence": {
+    "duration_ms": 28317.187072,
+    "median_ms": 1066.344832,
+    "mad_ms": 103.28537599999999,
+    "n": 86,
+    "ratio": 26.56,
+    "transport_retries": 1
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "high",
+   "confidence": 1.0,
+   "trace_id": "0xc28d31238eb1dc194c7f8c079893b118",
+   "task_id": "t043",
+   "span_ids": [
+    "0x8a753923830463e3"
+   ],
+   "title": "chat gemini-3.5-flash-lite took 25181ms (23.6\u00d7 its median)",
+   "detail": "baseline median 1066.3ms, MAD 103.3ms over n=86; 1 transport retries inside the span",
+   "evidence": {
+    "duration_ms": 25181.134848,
+    "median_ms": 1066.344832,
+    "mad_ms": 103.28537599999999,
+    "n": 86,
+    "ratio": 23.61,
+    "transport_retries": 1
+   },
+   "code_location": null,
+   "scope": "trace"
+  },
+  {
+   "detector_id": "perf.latency_outlier",
+   "severity": "low",
+   "confidence": 0.696,
+   "trace_id": "0x49efe2610703f81ed3a327990f8f76eb",
+   "task_id": "t021",
+   "span_ids": [
+    "0x34f6b00bc9541ce4"
+   ],
+   "title": "fetch_order_status took 1ms (3.9\u00d7 its median)",
+   "detail": "baseline median 0.2ms, MAD 0.0ms over n=11",
+   "evidence": {
+    "duration_ms": 0.651008,
+    "median_ms": 0.166144,
+    "mad_ms": 0.033024000000000026,
+    "n": 11,
+    "ratio": 3.92,
+    "transport_retries": 0
+   },
+   "code_location": {
+    "file": "/home/ayan/ongoing-projects/agent_reliability_go/src/tracepin/tools/flaky.py",
+    "function": "fetch_order_status",
+    "line": 44
+   },
+   "scope": "trace"
+  }
+ ],
+ "summary": {
+  "total": 7,
+  "by_detector": {
+   "perf.latency_outlier": 7
+  },
+  "by_severity": {
+   "high": 6,
+   "low": 1
+  },
+  "traces_with_findings": 7,
+  "traces_with_high": 6,
+  "detectors_run": [
+   "args.schema_invalid",
+   "args.type_confusion",
+   "error.ignored",
+   "error.no_progress",
+   "error.self_correction_cost",
+   "tool.unknown_name",
+   "tool.confusable_name",
+   "answer.unsupported",
+   "answer.phantom_action",
+   "loop.repeated_call",
+   "loop.cycle",
+   "loop.retry_storm",
+   "loop.near_duplicate",
+   "perf.latency_outlier",
+   "perf.context_bloat",
+   "perf.token_spike"
+  ]
+ }
+}
