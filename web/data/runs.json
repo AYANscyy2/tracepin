@@ -1,0 +1,195 @@
+[
+ {
+  "run_id": "9d7035e7b694",
+  "label": "v1",
+  "model": "gemini-3.1-flash-lite",
+  "prompt_version": "v1",
+  "git_sha": "5a9512dea4298e29b78f650d5ec81c2de79e5d28",
+  "task_count": 44,
+  "pass_count": 35,
+  "summary": {
+   "total": 61,
+   "by_detector": {
+    "error.self_correction_cost": 16,
+    "args.schema_invalid": 15,
+    "perf.latency_outlier": 12,
+    "error.no_progress": 5,
+    "loop.retry_storm": 4,
+    "tool.unknown_name": 3,
+    "loop.near_duplicate": 3,
+    "perf.unaccounted_time": 2,
+    "args.type_confusion": 1
+   },
+   "by_severity": {
+    "high": 18,
+    "medium": 26,
+    "low": 17
+   },
+   "traces_with_findings": 21,
+   "traces_with_high": 12,
+   "detectors_run": [
+    "args.schema_invalid",
+    "args.type_confusion",
+    "error.ignored",
+    "error.no_progress",
+    "error.self_correction_cost",
+    "tool.unknown_name",
+    "tool.confusable_name",
+    "answer.unsupported",
+    "answer.phantom_action",
+    "loop.repeated_call",
+    "loop.cycle",
+    "loop.retry_storm",
+    "loop.near_duplicate",
+    "perf.latency_outlier",
+    "perf.context_bloat",
+    "perf.token_spike",
+    "perf.unaccounted_time"
+   ]
+  },
+  "total_input_tokens": 65345,
+  "total_wall_ms": 2403648.2
+ },
+ {
+  "run_id": "c506b6cf636b",
+  "label": "v1_35lite",
+  "model": "gemini-3.5-flash-lite",
+  "prompt_version": "v1",
+  "git_sha": "fb4212ef41096753681e4292c5095a4210cfc8a5",
+  "task_count": 44,
+  "pass_count": 35,
+  "summary": {
+   "total": 75,
+   "by_detector": {
+    "error.self_correction_cost": 18,
+    "args.schema_invalid": 17,
+    "perf.latency_outlier": 15,
+    "args.type_confusion": 7,
+    "loop.retry_storm": 6,
+    "answer.phantom_action": 4,
+    "error.no_progress": 3,
+    "tool.unknown_name": 2,
+    "perf.unaccounted_time": 2,
+    "error.ignored": 1
+   },
+   "by_severity": {
+    "high": 25,
+    "medium": 31,
+    "low": 19
+   },
+   "traces_with_findings": 20,
+   "traces_with_high": 14,
+   "detectors_run": [
+    "args.schema_invalid",
+    "args.type_confusion",
+    "error.ignored",
+    "error.no_progress",
+    "error.self_correction_cost",
+    "tool.unknown_name",
+    "tool.confusable_name",
+    "answer.unsupported",
+    "answer.phantom_action",
+    "loop.repeated_call",
+    "loop.cycle",
+    "loop.retry_storm",
+    "loop.near_duplicate",
+    "perf.latency_outlier",
+    "perf.context_bloat",
+    "perf.token_spike",
+    "perf.unaccounted_time"
+   ]
+  },
+  "total_input_tokens": 71442,
+  "total_wall_ms": 4479848.9
+ },
+ {
+  "run_id": "3a519473661c",
+  "label": "v2_35lite",
+  "model": "gemini-3.5-flash-lite",
+  "prompt_version": "v2",
+  "git_sha": "96b8233e69c39f6c4c75eb9ce9f58d0a3890bbe7",
+  "task_count": 44,
+  "pass_count": 41,
+  "summary": {
+   "total": 35,
+   "by_detector": {
+    "perf.latency_outlier": 14,
+    "args.schema_invalid": 9,
+    "error.self_correction_cost": 6,
+    "args.type_confusion": 2,
+    "loop.retry_storm": 2,
+    "error.ignored": 2
+   },
+   "by_severity": {
+    "high": 8,
+    "medium": 18,
+    "low": 9
+   },
+   "traces_with_findings": 17,
+   "traces_with_high": 5,
+   "detectors_run": [
+    "args.schema_invalid",
+    "args.type_confusion",
+    "error.ignored",
+    "error.no_progress",
+    "error.self_correction_cost",
+    "tool.unknown_name",
+    "tool.confusable_name",
+    "answer.unsupported",
+    "answer.phantom_action",
+    "loop.repeated_call",
+    "loop.cycle",
+    "loop.retry_storm",
+    "loop.near_duplicate",
+    "perf.latency_outlier",
+    "perf.context_bloat",
+    "perf.token_spike",
+    "perf.unaccounted_time"
+   ]
+  },
+  "total_input_tokens": 46492,
+  "total_wall_ms": 330868.8
+ },
+ {
+  "run_id": "5ac209f1fdfd",
+  "label": "v3_35lite",
+  "model": "gemini-3.5-flash-lite",
+  "prompt_version": "v2",
+  "git_sha": "dac1067c2ca369cad0db33408acc8a67067c2cd2",
+  "task_count": 44,
+  "pass_count": 43,
+  "summary": {
+   "total": 7,
+   "by_detector": {
+    "perf.latency_outlier": 7
+   },
+   "by_severity": {
+    "high": 6,
+    "low": 1
+   },
+   "traces_with_findings": 7,
+   "traces_with_high": 6,
+   "detectors_run": [
+    "args.schema_invalid",
+    "args.type_confusion",
+    "error.ignored",
+    "error.no_progress",
+    "error.self_correction_cost",
+    "tool.unknown_name",
+    "tool.confusable_name",
+    "answer.unsupported",
+    "answer.phantom_action",
+    "loop.repeated_call",
+    "loop.cycle",
+    "loop.retry_storm",
+    "loop.near_duplicate",
+    "perf.latency_outlier",
+    "perf.context_bloat",
+    "perf.token_spike",
+    "perf.unaccounted_time"
+   ]
+  },
+  "total_input_tokens": 43114,
+  "total_wall_ms": 228280.6
+ }
+]
