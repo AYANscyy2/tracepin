@@ -33,10 +33,17 @@ _ARTICLES = [
 ]
 
 
-@traced_tool(description="Search the knowledge base.")
+@traced_tool(
+    description=(
+        "Search the knowledge base. `query` must be an object of the form "
+        '{"terms": ["<keyword>", ...], "filters": {"category": "<account|billing|data|api>", '
+        '"after": "YYYY-MM-DD" or null}}. `terms` is a list of single keywords (not a sentence); '
+        "`filters.category` is required; `after` restricts to articles published after that date."
+    )
+)
 def search_kb(query: dict) -> list:
-    # expects {"terms": [...], "filters": {"category": str, "after": "YYYY-MM-DD"}}
-    # description above says none of this
+    # Day 1 shipped this with description="Search the knowledge base." — the Day 2 run-level
+    # args.schema_invalid finding (100% of rejections on this tool) pointed here.
     q = KBQuery.model_validate(query)
     terms = {t.lower() for t in q.terms}
     out = []
