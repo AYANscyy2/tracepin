@@ -93,7 +93,9 @@ input messages and model output as span events (`gen_ai.client.inference.operati
 
 ## What it looks like
 
-![Jaeger waterfall: invoke_agent → chat → execute_tool, with rejected search_kb calls flagged](docs/jaeger_waterfall.png)
+![Jaeger trace: invoke_agent → chat → execute_tool nested, rejected search_kb calls flagged red](docs/jaeger_trace.png)
+
+![Rejected execute_tool span tags: status ERROR with the Pydantic validation message](docs/jaeger_waterfall.png)
 
 ## Trace format
 
