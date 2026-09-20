@@ -43,6 +43,13 @@ def main(path: str) -> int:
     repeats = [(t, k, n) for t, c in per_trace.items() for k, n in c.items() if n >= 3]
     report("some task repeated identical tool call 3+ times", bool(repeats),
            f"{len(repeats)} cases; e.g. {repeats[0][1][0]} x{repeats[0][2]}" if repeats else "")
+    # Softer signal: same tool 5+ times in one trace regardless of args (category-guessing loops).
+    per_tool = defaultdict(Counter)
+    for s in tools:
+        per_tool[s["context"]["trace_id"]][s["attributes"]["gen_ai.tool.name"]] += 1
+    loops = [(t, k, n) for t, c in per_tool.items() for k, n in c.items() if n >= 5]
+    print(f"  [info] same tool 5+ times in one trace (any args): {len(loops)} traces"
+          + (f"; e.g. {loops[0][1]} x{loops[0][2]}" if loops else ""))
 
     chats = [s for s in spans if s["attributes"].get("gen_ai.operation.name") == "chat"]
     chats_ok = [s for s in chats if s["status"]["status_code"] != "ERROR"]

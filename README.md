@@ -64,10 +64,18 @@ the prompt before the tools", and that held:
 |---|---|---|---|---|
 | terse ("use the tools, be brief") | 40/44 | 1 | 30 | 0 |
 | + never refuse, retry on failure | 34/44 | 6 | 33 | 0 |
-| + stale tool list (final v1) | see `traces/run_v1.log` | | | |
+| + stale tool list (final v1) | 35/43 | 6 | 26 | 3 |
 
 `gemini-3.1-flash-lite` never invented a tool name on its own across 88 tasks; it only
-does so when the prompt mentions one. The earlier runs are kept in `traces/` for comparison.
+does so when the prompt mentions one. It also never retries with byte-identical arguments:
+after a rejection it varies something each time (typically the `search_kb` category —
+`orders`, `general`, `returns`, `policies`…), so the loops in the trace are *near*-duplicate,
+5–7 calls of the same tool per task. Day 2's loop detector should key on that, not on
+exact-match arguments.
+
+The final v1 run covers 43 of 44 tasks: `t044` died on the free-tier daily quota (500
+requests/model/day) and can be re-run with `tracepin run --run-id 9d7035e7b694 --only t044`
+once it resets. `traces/sample.jsonl` is that run.
 
 ## Run it
 
@@ -76,8 +84,8 @@ uv venv -p 3.12 && uv pip install -e .
 cp .env.example .env.local   # add GEMINI_API_KEY
 docker compose up -d         # Jaeger UI at http://localhost:16686
 
-tracepin --pause 2           # all tasks, sequential; writes traces/run_<run_id>.jsonl
-tracepin --only t037,t041    # subset
+tracepin run --pause 2           # all tasks, sequential; writes traces/run_<run_id>.jsonl
+tracepin run --only t037,t041    # subset
 python scripts/check_day1.py traces/run_<run_id>.jsonl
 ```
 
