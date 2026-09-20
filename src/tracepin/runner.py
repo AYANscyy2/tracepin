@@ -2,6 +2,7 @@
 
 import json
 import pathlib
+import time
 import uuid
 from collections import Counter
 
@@ -23,6 +24,7 @@ def run(
     out: str = typer.Option("traces/run_{run_id}.jsonl", help="Trace output; {run_id} is substituted."),
     otlp: bool = typer.Option(True, help="Also export to Jaeger at localhost:4318."),
     only: str = typer.Option("", help="Comma-separated task ids to run (default: all)."),
+    pause: float = typer.Option(0.0, help="Seconds to sleep between tasks (free-tier pacing)."),
 ):
     load_dotenv(".env"); load_dotenv(".env.local")
     run_id = uuid.uuid4().hex[:12]
@@ -55,6 +57,8 @@ def run(
             mark = "[green]✓[/]" if r.success else "[red]✗[/]"
             progress.console.print(f"  {mark} {task.id} {r.stop_reason:14} iters={r.iterations} {r.final_answer[:70]!r}")
             progress.advance(bar)
+            if pause:
+                time.sleep(pause)
     shutdown_tracing()
 
     _summarize(out_path, results)

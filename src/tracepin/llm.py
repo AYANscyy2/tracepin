@@ -2,15 +2,21 @@
 
 import json
 import os
+import re
+import time
 import uuid
 from dataclasses import dataclass, field
 
 from google import genai
-from google.genai import types
+from google.genai import errors, types
 from opentelemetry import trace
 from opentelemetry.trace import SpanKind, Status, StatusCode
 
 tracer = trace.get_tracer("tracepin")
+
+# Free-tier quota is 15 req/min. 429s are transport noise, not agent behaviour, so they
+# are retried inside the chat span and counted in tracepin.chat.transport_retries.
+MAX_TRANSPORT_RETRIES = 4
 
 CAPTURE_CONTENT = os.environ.get("TRACEPIN_CAPTURE_CONTENT", "0") == "1"
 MAX_CONTENT_ATTR = 8000
@@ -40,6 +46,11 @@ def _content_to_dict(c: types.Content) -> dict:
         elif p.function_response is not None:
             parts.append({"function_response": {"name": p.function_response.name, "response": p.function_response.response}})
     return {"role": c.role, "parts": parts}
+
+
+def _retry_delay(message: str) -> float:
+    m = re.search(r"retryDelay['\"]?: ['\"]?(\d+)s", message)
+    return float(m.group(1)) + 1 if m else 20.0
 
 
 class LLM:
@@ -72,22 +83,34 @@ class LLM:
                     },
                 )
 
+            config = types.GenerateContentConfig(
+                system_instruction=self.system_prompt,
+                temperature=self.temperature,
+                tools=self.tools,
+                # No automatic function calling: the agent loop owns dispatch.
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+            )
+            retries = 0
             try:
-                resp = self.client.models.generate_content(
-                    model=self.model,
-                    contents=history,
-                    config=types.GenerateContentConfig(
-                        system_instruction=self.system_prompt,
-                        temperature=self.temperature,
-                        tools=self.tools,
-                        # No automatic function calling: the agent loop owns dispatch.
-                        automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
-                    ),
-                )
+                while True:
+                    try:
+                        resp = self.client.models.generate_content(
+                            model=self.model, contents=history, config=config
+                        )
+                        break
+                    except errors.ClientError as exc:
+                        if exc.code != 429 or retries >= MAX_TRANSPORT_RETRIES:
+                            raise
+                        retries += 1
+                        delay = _retry_delay(str(exc))
+                        span.add_event("tracepin.transport.retry", {"attempt": retries, "delay_s": delay})
+                        time.sleep(delay)
             except Exception as exc:
                 span.record_exception(exc)
                 span.set_status(Status(StatusCode.ERROR, str(exc)))
                 raise
+            finally:
+                span.set_attribute("tracepin.chat.transport_retries", retries)
 
             usage = resp.usage_metadata
             if usage is not None:
