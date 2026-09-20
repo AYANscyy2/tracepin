@@ -1,0 +1,63 @@
+# Bugs the detectors surfaced (scratch log, Day 2)
+
+Kept as-we-go per the Day 2 spec §10. Trace ids are from `traces/run_9d7035e7b694.jsonl`
+(prompt v1) unless noted. Run `tracepin report findings/run_v1.json --trace <task>` to see one.
+
+## 1. Prompt drift: the system prompt advertises tools that no longer exist
+
+- `tool.unknown_name` on t037 (`cancel_order`), t038 (`send_email`), t040 (`update_user`).
+- Nothing labelled *why* the model called them. The detector cross-checks the name against
+  `tracepin.chat.tools_offered` (what the model was actually given) **and** against the
+  captured system prompt: all three names appear in `prompts/v1.md`, none in the registry.
+  Evidence field `advertised_in_system_prompt: true` → this is a prompt bug, not a
+  hallucination. Distance to the nearest real tool is 5–8, so not a confusable pair either.
+- Across 132 tasks in three v1-family runs, `gemini-3.1-flash-lite` never invented a
+  tool name unprompted. Every unknown_tool event traces back to the prompt.
+- Fix: v2 prompt lists only the real tools.
+
+## 2. `search_kb` owns 100% of invalid-argument events — the tool description is the bug
+
+- `args.schema_invalid` run-level finding: 44/44 schema rejections hit `search_kb`,
+  across 16 tasks. Missing fields: `query.terms` ×26, `query.filters` ×26,
+  `query.filters.category` ×18.
+- The model tries the same wrong shapes every time (`{"query": {"query": "..."}}`,
+  `{"terms": [...]}` with no `filters`, `filters: {}`), then reads the Pydantic error and
+  converges in 2–3 turns. `error.self_correction_cost` prices that at ~1,100–1,400 tokens
+  and 7–19 s per task. Every kb_filters task pays it.
+- `args.type_confusion` (t041, `terms: "users"` — string where list expected) is the same
+  root cause seen from a different angle.
+- `code_location` on the finding points at `src/tracepin/tools/docs.py:36` — the
+  `@traced_tool(description="Search the knowledge base.")` line. The fix is one docstring.
+- Fix candidate: v3 = same prompt, better `search_kb` description. Kept separate from v2 so
+  the regression diff isolates one variable at a time.
+
+## 3. "Never tell the user you cannot do something" turns unsolvable tasks into 8-iteration spins
+
+- `error.no_progress` on t037, t038, t040, t041, t042, t043: all `max_iterations`, all
+  `unsolvable`-tagged. Pattern: one rejected call to the advertised-but-missing tool, then
+  the agent falls back to `search_kb` and keeps searching with new terms (`distinct/total
+  = 1.00`, "exploring" not "spinning") because the prompt forbids saying "I can't".
+- `perf.context_bloat` doesn't fire on these (Gemini's tool-result turns are compact, ~600
+  tokens/iteration linear growth), but the token cost is visible in `error.no_progress`
+  evidence: ~5,000 input tokens per spin vs ~700 for a clean task.
+- In the terse-prompt run (`run_v1_terse`), the same tasks were answered in 2 iterations
+  with a refusal and passed. The eager prompt regressed 6 tasks on its own — `tracepin
+  compare findings/run_v1_terse.json findings/run_v1_eager.json` shows them in REGRESSED.
+- Fix: v2 prompt allows refusal and caps retries.
+
+## 4. `error.ignored` — flaky order service, answered anyway
+
+- terse run: t038 and t039 — `search_kb` raised, the agent answered without a later
+  success. Severity LOW because the answer acknowledged it ("I couldn't find...").
+- The HIGH variant (answer hides the failure) has not shown up in a real run yet; the
+  fixture `tests/fixtures/error_ignored.jsonl` covers it.
+
+## 5. Detector weaknesses found while reading real output (kept honest)
+
+- `answer.unsupported` v0 flagged `'m sorry, I couldn'` as a quoted claim — apostrophes were
+  treated as quotes. Fixed to double/curly quotes only. Still heuristic, confidence 0.5.
+- `perf.latency_outlier` on chat spans: free-tier Gemini latency jitters 2–4× on its own.
+  Added `CHAT_MIN_RATIO = 5` so only real stalls (transport retries: 47–94 s spans) fire.
+- The 44-task run picked up duplicate traces for t035–t043 because a resume was started
+  while the original process was still running. The loader now keeps the latest trace per
+  task and warns; the file was de-duplicated by `service.instance.id`.
