@@ -77,3 +77,16 @@ Run `run_v1_35lite_c506b6cf636b` (prompt v1, `gemini-3.5-flash-lite`, 35/44):
 - The 44-task run picked up duplicate traces for t035–t043 because a resume was started
   while the original process was still running. The loader now keeps the latest trace per
   task and warns; the file was de-duplicated by `service.instance.id`.
+
+## 6. v1 → v2 regression diff (`gemini-3.5-flash-lite`, runs c506b6cf636b → 3a519473661c)
+
+- 35/44 → 41/44. FIXED: t037–t044 (every unsolvable task; 1–2 iterations, honest refusals).
+  `tool.unknown_name`, `answer.phantom_action`, `error.no_progress` all go to zero.
+- REGRESSED: t032, t036 (`kb_filters`). v2's "retry at most once" makes the agent stop
+  after the second `search_kb` schema rejection; v1 got the shape right on attempt 3.
+  Cost of the workaround, not a fix — the fix is the `search_kb` description (bug 2) and
+  belongs in its own run (v3) so the diff isolates it.
+- STILL FAILING: t024, same signature both runs. Answer says "September 23, 2026",
+  checker wants `2026-09-23`. Checker bug.
+- Aggregate: −35% input tokens, −45% tool calls, −30% iterations, −93% wall clock
+  (the v1 run also absorbed transport retries).

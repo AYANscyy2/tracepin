@@ -164,7 +164,38 @@ Full log with trace ids in [docs/BUGS.md](docs/BUGS.md).
 
 ### Regression: v1 → v2
 
-REGRESSION_PLACEHOLDER
+`prompts/v2.md` changes exactly what the three findings above point at: it lists only the
+five real tools, it allows the agent to say "I can't", and it caps retries at one. Same
+44 tasks, same model, temperature 0. (`gemini-3.1-flash-lite` had hit its 500 req/day
+free-tier cap by then, so both runs of this pair are on `gemini-3.5-flash-lite`;
+`findings/sample_v1_35lite.json` / `sample_v2_35lite.json` are committed so the diff below
+reproduces without an API key.)
+
+```bash
+tracepin compare findings/sample_v1_35lite.json findings/sample_v2_35lite.json
+```
+
+![tracepin compare: REGRESSED, FIXED, STILL FAILING buckets and per-detector deltas](docs/compare_v1_v2.png)
+
+| | v1 | v2 |
+|---|---|---|
+| passed | 35/44 | **41/44** |
+| `tool.unknown_name` / `answer.phantom_action` / `error.no_progress` | 2 / 4 / 3 | **0 / 0 / 0** |
+| `args.schema_invalid` events | 32 | 14 |
+| input tokens / tool calls / iterations | 71k / 101 / 141 | 46k / 56 / 99 |
+
+**FIXED (8):** every `unsolvable` task. t037–t044 now refuse in 1–2 iterations; under v1
+they burned 6–8 iterations and four of them fabricated a completed action.
+
+**REGRESSED (2):** t032 and t036, both `kb_filters`. The one-retry cap in v2 means the
+agent gives up on `search_kb` after its second schema rejection, where v1 got the shape
+right on the third try. The diff is honest about it: `compare` exits 1. This is bug 2
+showing through — the retry cap is a workaround, the fix is the `search_kb` description,
+and that is a separate run so the effect can be measured on its own.
+
+**STILL FAILING (1):** t024, same signature in both runs — the agent answers "September
+23, 2026" and the checker wants `2026-09-23`. A checker bug, not an agent bug; the
+"same signature" note is what tells you not to chase it.
 
 ## Run it
 
