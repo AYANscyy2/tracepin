@@ -103,8 +103,8 @@ class LLM:
                             model=self.model, contents=history, config=config
                         )
                         break
-                    except (errors.ClientError, errors.ServerError, httpx.TimeoutException) as exc:
-                        retryable = isinstance(exc, (errors.ServerError, httpx.TimeoutException)) or (
+                    except (errors.ClientError, errors.ServerError, httpx.TransportError) as exc:
+                        retryable = isinstance(exc, (errors.ServerError, httpx.TransportError)) or (
                             isinstance(exc, errors.ClientError) and exc.code == 429
                         )
                         if not retryable or retries >= MAX_TRANSPORT_RETRIES:
