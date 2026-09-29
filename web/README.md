@@ -8,9 +8,10 @@ to `out/`.
 npm install
 npm run dev        # http://localhost:3000
 npm run build      # static export in out/
+npm test           # vitest: graph layout, status derivation, re-render counts
 ```
 
 Routes: `/` runs · `/runs/[runId]` tasks + detector summary + ranked locations ·
-`/traces/[traceId]` waterfall, findings, code panel · `/compare` v1 → v2 → v3 buckets.
+`/traces/[traceId]` waterfall or graph (`#graph`), findings, code panel · `/compare` v1 → v2 → v3 buckets.
 
 Deploy: `npx vercel --prod` from this directory (framework preset Next.js, output `out/`).

@@ -119,7 +119,7 @@ tracepin analyze ──► findings/<id>.json         baselines (per-tool median
                    regression        commit, ranked by   exits 0 only while the failure
                                      tasks broken        signature still fires
                        │
-scripts/export_web_data.py ──► web/data/ ──► Next.js viewer (waterfall · findings · code panel · compare)
+scripts/export_web_data.py ──► web/data/ ──► Next.js viewer (waterfall | graph · findings · code panel · compare)
 ```
 
 Spans follow OTel GenAI semconv v1.36: `invoke_agent` → `chat {model}` → `execute_tool
@@ -128,6 +128,61 @@ Spans follow OTel GenAI semconv v1.36: `invoke_agent` → `chat {model}` → `ex
 call — unknown name, Pydantic validation failure, raising tool — is an `execute_tool` span
 with `status=ERROR` and `tracepin.tool.outcome`, fed back to the model as a tool result so
 the recovery is traced too.
+
+## Graph view
+
+<!-- screenshot: docs/viewer_graph.png, t037 on the v1 run with chat #2 selected -->
+_Screenshot to come: `docs/viewer_graph.png`._
+
+The trace page has a **Waterfall | Graph** toggle (`#graph` in the URL keeps it). The
+waterfall answers *when*; the graph answers *what the agent did next*. Under
+`invoke_agent` every chat turn is a row and the tool calls that turn requested sit side
+by side in the row below it, with edges chat → each call → next chat, so the agent loop
+reads top to bottom. Nodes carry the same glyphs as the waterfall (▶ agent, ✉ chat,
+⚙ tool), duration, tokens and transport retries on chats, the outcome on rejected calls,
+and a pin when a detector flagged the span. A bar on the left says failed (ERROR or a tool
+outcome other than `ok`), slow (a `perf.*` finding) or ok. Selection is shared with the
+waterfall: pick a finding and its spans stay lit while the rest dim; click a node to
+select its finding and see its attributes and events under the canvas.
+
+t037 on the v1 run (*"Cancel order ORD-1002"*, unsolvable by design) is the retry storm
+at a glance: `cancel_order` → `unknown_tool` (the prompt advertised it), `search_kb`
+rejected twice for invalid arguments, then chat #2 takes **72 s** with **2 transport
+retries** (`perf.latency_outlier`, 31.7× the median), then four near-identical
+`search_kb` calls that each come back empty until `max_iterations`. In the waterfall the
+72 s bar drowns out everything else; in the graph it is one amber node in a column of
+eight turns.
+
+**Engineering.**
+
+- **Custom layout instead of ELK.** The first version used ELK's `layered` algorithm: at
+  1,000 spans it took **~36 s** and produced rows 100k+ px wide, because agent runs are
+  long sequences, not balanced trees. [`web/src/lib/graph.ts`](web/src/lib/graph.ts) is
+  one O(n log n) pass (the sort dominates): siblings grouped into rows (agent turns under
+  `invoke_agent`, time overlap anywhere else), subtrees branched right of their parent so
+  sequence edges never cross them. It lays out **1,000 spans in ~4 ms and 5,000 in
+  ~12 ms** (first call, Node 26; 2–7 ms in the browser HUD), with zero overlaps; both are
+  asserted in `npm test` (under 250 ms, no two nodes intersecting).
+- **Selecting re-renders only the nodes that change.** Selection lives in a per-view
+  zustand store, not on the React Flow `nodes` array, which stays the same object across
+  selections. Each memoised node subscribes to two derived booleans (`highlighted.has(id)`,
+  `selectedSpan === id`), and dimming everything else is one class on the wrapper plus a
+  CSS rule. A jsdom test renders the real view and counts: choosing a finding re-renders
+  exactly its spans, switching findings re-renders only the symmetric difference, and a
+  click re-renders one node.
+- **Virtualised above 200 nodes** (`onlyRenderVisibleElements`): ~15 of 5,000 nodes are
+  mounted at the opening zoom.
+
+[`/graph-stress/?n=1000`](web/src/app/graph-stress/page.tsx) (also 250 / 2000 / 5000)
+renders a seeded synthetic trace in the same span shape, with an fps and layout-time HUD:
+
+| spans | layout (HUD) | mounted at opening zoom | pan/zoom fps |
+| ----: | -----------: | ----------------------: | -----------: |
+| 1,000 |        ~5 ms |                     ~14 |     _[fill]_ |
+| 5,000 |        ~7 ms |                     ~16 |     _[fill]_ |
+
+_fps to be measured on a real browser window (Chrome Performance panel, 10 s of hard
+panning); headless numbers are not meaningful._
 
 ## Detectors
 
@@ -173,6 +228,7 @@ tracepin compare   findings/sample_v1_35lite.json findings/sample_v2_35lite.json
 tracepin compare   findings/sample_v2_35lite.json findings/sample_v3_35lite.json   # exit 0
 
 cd web && npm install && npm run dev                                   # viewer on :3000
+cd web && npm test                                                     # layout, status, re-render tests
 ```
 
 With a key (`cp .env.example .env.local`, `docker compose up -d` for Jaeger):
