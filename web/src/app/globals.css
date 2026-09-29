@@ -53,3 +53,26 @@ tr:last-child td { border-bottom: 0; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* graph view: React Flow restyled onto the site tokens */
+.tp-graph .react-flow {
+  --xy-edge-stroke: var(--ink-3);
+  --xy-edge-stroke-width: 1.25;
+  --xy-background-color: var(--bg);
+  --xy-minimap-background-color: var(--panel);
+  --xy-minimap-mask-background-color: rgba(246, 247, 249, 0.7);
+  --xy-controls-button-background-color: var(--panel);
+  --xy-controls-button-background-color-hover: var(--bg);
+  --xy-controls-button-color: var(--ink-2);
+  --xy-controls-button-border-color: var(--rule);
+  --xy-controls-box-shadow: none;
+  --xy-attribution-background-color: transparent;
+}
+.tp-graph .react-flow__controls, .tp-graph .react-flow__minimap { border: 1px solid var(--rule); }
+.tp-graph .react-flow__handle { opacity: 0; pointer-events: none; min-width: 0; min-height: 0; width: 1px; height: 1px; border: 0; }
+.tp-graph .react-flow__edge.edge-failed .react-flow__edge-path { stroke: var(--error); }
+.tp-graph .react-flow__edge-path { transition: opacity 120ms; }
+/* A selected finding dims everything outside it. The class sits on the wrapper, so selecting
+   re-renders only the nodes whose own highlight flips, not all of them. */
+.tp-graph.has-selection .gnode:not(.is-hl) { opacity: 0.3; }
+.tp-graph.has-selection .react-flow__edge-path { opacity: 0.35; }

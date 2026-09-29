@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Finding, Span } from "@/lib/types";
 import type { Gap } from "./TraceExplorer";
 import { fmtMs } from "@/lib/fmt";
+import { SpanAttributes } from "./SpanAttributes";
 
 const ROW = 22;
 const LABEL_W = 300;
@@ -17,8 +18,6 @@ function depthOf(s: Span, byId: Map<string, Span>): number {
 function outcome(s: Span): string | null {
   return (s.attributes["tracepin.tool.outcome"] as string | undefined) ?? null;
 }
-
-const HIDE_ATTRS = new Set(["tracepin.task.prompt", "tracepin.task.expected"]);
 
 export function Waterfall({ spans, highlighted, flagged, gaps, onHover, onSelectSpan }: {
   spans: Span[]; highlighted: Set<string>; flagged: Map<string, Finding[]>; gaps: Gap[];
@@ -82,16 +81,7 @@ export function Waterfall({ spans, highlighted, flagged, gaps, onHover, onSelect
               </div>
               {isOpen && (
                 <div className="border-b hairline bg-bg px-3 py-2">
-                  <dl className="mono grid grid-cols-[max-content_1fr] gap-x-4 gap-y-0.5 text-[11px]">
-                    <dt className="text-ink-3">span_id</dt><dd>{s.span_id}</dd>
-                    <dt className="text-ink-3">status</dt><dd className={isErr ? "text-error" : ""}>{s.status_code}{s.status_message ? ` — ${s.status_message}` : ""}</dd>
-                    {Object.entries(s.attributes).filter(([k]) => !HIDE_ATTRS.has(k)).map(([k, v]) => (
-                      <><dt key={k + "k"} className="text-ink-3">{k}</dt><dd key={k + "v"} className="break-all whitespace-pre-wrap">{typeof v === "string" ? v : JSON.stringify(v)}</dd></>
-                    ))}
-                    {s.events.map((e, i) => (
-                      <><dt key={i + "ek"} className="text-warn">event {e.name}</dt><dd key={i + "ev"} className="break-all">{e.at_ms !== null ? `@${fmtMs(e.at_ms)} ` : ""}{JSON.stringify(e.attributes)}</dd></>
-                    ))}
-                  </dl>
+                  <SpanAttributes span={s} />
                 </div>
               )}
             </div>
