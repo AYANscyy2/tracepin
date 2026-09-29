@@ -74,5 +74,5 @@ tr:last-child td { border-bottom: 0; }
 .tp-graph .react-flow__edge-path { transition: opacity 120ms; }
 /* A selected finding dims everything outside it. The class sits on the wrapper, so selecting
    re-renders only the nodes whose own highlight flips, not all of them. */
-.tp-graph.has-selection .gnode:not(.is-hl) { opacity: 0.3; }
+.tp-graph.has-selection .gnode:not(.is-hl) { opacity: 0.45; }
 .tp-graph.has-selection .react-flow__edge-path { opacity: 0.35; }

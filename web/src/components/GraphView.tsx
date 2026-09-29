@@ -99,22 +99,28 @@ const Canvas = memo(function Canvas({ graph, store, onHover }: { graph: TraceGra
   );
 });
 
-/** Once the pane has a size: frame the first nodes at zoom <= 1, centred horizontally, top-aligned. */
+/**
+ * Once the pane has a size: frame the first nodes at zoom <= 1, centred horizontally, with
+ * FRAME_PAD above the top node. Applied once per pan/zoom instance: setViewport is a no-op
+ * until React Flow creates it, and a Strict Mode remount recreates it at (0, 0, 1).
+ */
 function InitialView({ graph }: { graph: TraceGraph }) {
   const { setViewport } = useReactFlow();
   const w = useStore((s) => s.width);
   const h = useStore((s) => s.height);
-  const done = useRef(false);
+  const panZoom = useStore((s) => s.panZoom);
+  const framed = useRef<typeof panZoom>(null);
   useEffect(() => {
-    if (done.current || !w || !h || !graph.nodes.length) return;
-    done.current = true;
+    if (!panZoom || framed.current === panZoom || !w || !h || !graph.nodes.length) return;
+    framed.current = panZoom;
     const first = graph.nodes.slice(0, INITIAL_FRAME);
     const minX = Math.min(...first.map((n) => n.position.x));
     const maxX = Math.max(...first.map((n) => n.position.x + n.width));
+    const minY = Math.min(...first.map((n) => n.position.y));
     const maxY = Math.max(...first.map((n) => n.position.y + n.height));
-    const zoom = Math.min(1, (w - 2 * FRAME_PAD) / (maxX - minX), (h - 2 * FRAME_PAD) / maxY);
-    void setViewport({ x: (w - (maxX - minX) * zoom) / 2 - minX * zoom, y: FRAME_PAD, zoom });
-  }, [w, h, graph, setViewport]);
+    const zoom = Math.min(1, (w - 2 * FRAME_PAD) / (maxX - minX), (h - 2 * FRAME_PAD) / (maxY - minY));
+    void setViewport({ x: (w - (maxX - minX) * zoom) / 2 - minX * zoom, y: FRAME_PAD - minY * zoom, zoom });
+  }, [w, h, panZoom, graph, setViewport]);
   return null;
 }
 
